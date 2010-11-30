@@ -1,0 +1,7 @@
+0:class 0:A 1:B
+1:head_shape 1:round 2:square 3:octagon
+2:body_shape 1:round 2:square 3:octagon
+3:is_smiling 1:yes 2:no
+4:holding 1:sword 2:balloon 3:flag
+5:jacket_color 1:red 2:yellow 3:green 4:blue
+6:has_tie 1:yes 2:no
