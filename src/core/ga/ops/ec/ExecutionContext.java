@@ -1,5 +1,6 @@
 package core.ga.ops.ec;
 
+import core.DataSetBundle;
 import core.ga.Evaluator;
 import core.ga.RuleChromosomeSignature;
 import core.ga.RuleDecoderSubractingOneFromClass;
@@ -15,43 +16,42 @@ public class ExecutionContext {
     int size;
     Random rand;
     Evaluator evaluator;
-    RuleChromosomeSignature signature;
-    UniformDataFrame<Integer, Integer> data;
+    DataSetBundle bundle;
+    FitnessEval ruleFitEval;
     RuleDecoderSubractingOneFromClass decoder;
 
     public ExecutionContext(int size, Random rand, Evaluator evaluator,
-            RuleChromosomeSignature signature,
-            UniformDataFrame<Integer, Integer> data,
-            RuleDecoderSubractingOneFromClass decoder) {
+            DataSetBundle bundle, RuleDecoderSubractingOneFromClass decoder,
+            FitnessEval ruleFitEval) {
         this.size = size;
         this.rand = rand;
-        this.evaluator = evaluator;
-        this.signature = signature;
-        this.data = data;
+        this.bundle = bundle;
         this.decoder = decoder;
+        this.evaluator = evaluator;
+        this.ruleFitEval = ruleFitEval;
     }
 
-    public UniformDataFrame<Integer, Integer> getData() {
-        return data;
+    public UniformDataFrame<Integer, Integer> data() {
+        return bundle.getData();
     }
 
-    public RuleDecoderSubractingOneFromClass getDecoder() {
+    public RuleDecoderSubractingOneFromClass decoder() {
         return decoder;
     }
 
-    public Evaluator getEvaluator() {
+    public Evaluator evaluator() {
         return evaluator;
     }
 
-    public Random getRand() {
+    public Random rand() {
         return rand;
     }
 
-    public RuleChromosomeSignature getSignature() {
-        return signature;
+    public RuleChromosomeSignature signature() {
+        return bundle.getSignature();
     }
 
-    public int getSize() {
+    public int size() {
         return size;
     }
 }

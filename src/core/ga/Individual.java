@@ -14,10 +14,10 @@ import java.util.Set;
  */
 public class Individual {
 
-    Rule rule;
+    private Rule rule;
     Random rand;
-    BinaryConfMtx cm;
-    BinaryChromosome chromosome;
+    private BinaryConfMtx cm;
+    private BinaryChromosome chromosome;
     RuleChromosomeSignature signature;
     RuleDecoderSubractingOneFromClass decoder;
 
@@ -34,37 +34,61 @@ public class Individual {
             Evaluator evaluator) {
         cm = new BinaryConfMtx();
         for (Row<Integer, Integer> row : data) {
-            evaluator.evaluate(rule, row, cm);
+            evaluator.evaluate(rule(), row, cm);
         }
-    }
-
-    public final void randomize() {
-        randomize(0, signature.getBits());
     }
 
     public void decode(RuleDecoderSubractingOneFromClass decoder) {
         rule = decoder.decode(chromosome);
     }
 
-    public void randomize(int start, int length) {
+    public final void randomize() {
+        randomize(0, signature.getBits());
+    }
+
+    private void randomize(int start, int length) {
         for (int i = start, end = start + length; i < end; i++) {
-            chromosome.set(i, rand.nextBoolean());
+            chromosome().set(i, rand.nextBoolean());
         }
     }
 
     public void repair() {
         List<Selector> allSelectors = rule.getAllSelectors();
-        for (int selId = 0; selId < rule.getAllSelectors().size(); selId++) {
+        for (int selId = 0; selId < allSelectors.size(); selId++) {
             Selector sel = allSelectors.get(selId);
             Set domain = signature.getAttrDomain().get(selId);
             while (!domain.contains(sel.val)) {
                 Integer startAddr = signature.getGeneAddresses()[selId] + 2;
                 Integer length = signature.getValueCodeSizes()[selId];
                 randomize(startAddr, length);
-                sel = decoder.decodeSelector(chromosome, selId);
+                sel = decoder.decodeSelector(chromosome(), selId);
                 allSelectors.set(selId, sel);
                 rule.reset();
             }
         }
+    }
+
+    /**
+     * @return the rule
+     */
+    public Rule rule() {
+        return rule;
+    }
+
+    /**
+     * @return the cm
+     */
+    public BinaryConfMtx cm() {
+        return cm;
+    }
+
+    public double fitness() {
+        return cm.fMeasure();
+    }
+    /**
+     * @return the chromosome
+     */
+    public BinaryChromosome chromosome() {
+        return chromosome;
     }
 }

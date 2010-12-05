@@ -34,13 +34,10 @@ public class BinaryConfMtx {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("TP:").append(tp);
-        sb.append("  FN:").append(fn);
-        sb.append("  TN:").append(tn);
-        sb.append("  FP:").append(fp);
-        sb.append("  ACC:").append(accuracy());
-        sb.append("  F:").append(fMeasure());
-        return sb.toString();
+        String f = "TP: %d FN: %d TN: %d FP: %d "
+                + "ACC: %.1f%% F: %.1f%% RCL: %.1f%% PRC: %.1f%%";
+        return String.format(f, tp, fn, tn, fp,
+                accuracy() * 100, fMeasure() * 100,
+                recall() * 100, precision() * 100);
     }
 }
