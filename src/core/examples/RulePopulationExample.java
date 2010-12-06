@@ -71,8 +71,9 @@ public class RulePopulationExample {
     private static FitnessEval chooseFitnessEvaluator() {
         Integer id = 0;
         Map<Integer, FitnessEval> fm = new HashMap<Integer, FitnessEval>();
-        for (FitnessEval e : FitnessEvaluatorFactory.EVALS)
+        for (FitnessEval e : FitnessEvaluatorFactory.EVALS) {
             fm.put(id++, e);
+        }
         String options = fm.toString().replace("{", "[").replace("}", "]");
         out.print("Fitness: " + options + " ");
         return fm.get(scanner.nextInt());
