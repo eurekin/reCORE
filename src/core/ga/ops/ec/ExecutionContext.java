@@ -54,4 +54,15 @@ public class ExecutionContext {
     public int size() {
         return size;
     }
+
+    private double mt = 0.01;
+
+    public double getMt() {
+        return mt;
+    }
+
+    public void setMt(double mt) {
+        this.mt = mt;
+    }
+    
 }

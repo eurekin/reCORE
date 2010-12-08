@@ -14,8 +14,8 @@ import java.util.Set;
  */
 public class Individual {
 
-    private Rule rule;
     Random rand;
+    private Rule rule;
     private BinaryConfMtx cm;
     private BinaryChromosome chromosome;
     RuleChromosomeSignature signature;
@@ -85,10 +85,17 @@ public class Individual {
     public double fitness() {
         return cm.fMeasure();
     }
+
     /**
      * @return the chromosome
      */
     public BinaryChromosome chromosome() {
         return chromosome;
+    }
+
+    void mutate(double mt) {
+        for (int i = 0; i < signature.getBits(); i++)
+            if (rand.nextDouble() <= mt)
+                chromosome.set(i, !chromosome.get(i));
     }
 }

@@ -33,8 +33,12 @@ public class RulePopulationExample {
         out.println("Trying to find best rule for: " + ds.getCreationArgs());
 
         double max = 0;
+        RulePopulation pop = new RulePopulation(ctx);
+        pop.decode();
+        pop.repair();
+        pop.evaluate();
         for (int i = 0; i < 5000; i++) {
-            RulePopulation pop = new RulePopulation(ctx);
+            pop.mutate();
             pop.decode();
             pop.repair();
             pop.evaluate();

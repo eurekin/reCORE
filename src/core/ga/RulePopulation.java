@@ -57,4 +57,12 @@ public class RulePopulation implements Iterable<Individual> {
     public Iterator<Individual> iterator() {
         return individuals.iterator();
     }
+
+    public void mutate() {
+        final double mt = context.getMt();
+        for (Individual i : individuals) {
+            i.mutate(mt);
+        }
+
+    }
 }
