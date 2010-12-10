@@ -26,6 +26,10 @@ public class RulePopulation implements Iterable<Individual> {
         this.context = ctx;
     }
 
+    public void evolve() {
+
+    }
+
     public void evaluate(UniformDataFrame<Integer, Integer> data,
             Evaluator evaluator) {
     }

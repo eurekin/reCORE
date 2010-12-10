@@ -98,4 +98,34 @@ public class Individual {
             if (rand.nextDouble() <= mt)
                 chromosome.set(i, !chromosome.get(i));
     }
+
+    public int nextBinomial(int trials, double probability) {
+        if (trials * probability < 5.0
+                || trials * (1.0 - probability) < 5.0) {
+            // Not enough trials for a normal approximation.
+
+            // Special case of probablity = 1/2.
+            // This might take less time than using nextDouble(), I
+            // haven't checked.
+            if (probability == 0.5) {
+                int successes = 0;
+                for (int count = 0; count < trials; count++) {
+                    successes += rand.nextBoolean() ? 1 : 0;
+                }
+                return successes;
+            } else {
+                int successes = 0;
+                for (int count = 0; count < trials; count++) {
+                    successes += rand.nextDouble() < probability ? 1 : 0;
+                }
+                return successes;
+            }
+        } else {
+            // We can use a normal approximation
+            return (int) Math.floor(
+                    Math.sqrt(trials * probability * (1.0 - probability))
+                    * rand.nextGaussian() + 0.5 + probability * trials);
+
+        }
+    }
 }
