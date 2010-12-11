@@ -27,7 +27,6 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public void evolve() {
-
     }
 
     public void evaluate(UniformDataFrame<Integer, Integer> data,
@@ -68,5 +67,34 @@ public class RulePopulation implements Iterable<Individual> {
             i.mutate(mt);
         }
 
+    }
+
+    public void binomialCDF(double p, int n) {
+        double q = 1 - p;
+        int xmin = 0;
+        int xmax = n;
+        double mean = n * p;
+        double stdev = Math.sqrt(n * p * q);
+        q = Math.max(q, 0.000001);
+        double pdf = Math.pow(q, n);
+        double[] CDF = new double[n];
+        CDF[0] = pdf;
+        int mode = 0;
+        int median = 0;
+        for (int i = 1; i <= n; i++) {
+            double fac = ((double) (n - i + 1) / (double) i) * (p / q);
+            if (fac > 1) {
+                mode = i;
+            }
+            pdf *= fac;
+            CDF[i] = CDF[i - 1] + pdf;
+            if (CDF[i] <= 0.5001) {
+                median = i;
+            }
+        }
+        if (CDF[median] < 1) {
+            median += (Math.abs(CDF[median] - 0.5) < .0001) ? 0.5 : 1;
+        }
+//  X = BI;
     }
 }
