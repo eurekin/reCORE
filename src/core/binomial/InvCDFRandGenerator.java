@@ -64,7 +64,7 @@ public class InvCDFRandGenerator {
             nextDouble = r.nextDouble();
             System.out.printf("%d", dbinomN10P01.ceilingEntry(nextDouble).getValue());
             System.out.printf(" %.3f", nextDouble);
-            System.out.println("");
+            System.out.println();
         }
         Integer hist[] = new Integer[10];
         for (int i = 0; i < hist.length; i++) {
