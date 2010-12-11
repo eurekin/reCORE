@@ -1,9 +1,14 @@
 package core.ga;
 
 import core.BinaryChromosome;
+import core.ExecutionContextFactory;
+import core.binomial.InvCDFRandGenerator;
+import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.BinaryConfMtx;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -14,6 +19,16 @@ import java.util.Set;
  */
 public class Individual {
 
+    public static void testCorrectness() {
+        int times = 100;
+        ExecutionContext c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
+        Individual r = new Individual(c.signature(), c.rand(), c.decoder());
+        for (int i = 0; i < times; i++) {
+            System.out.println(r.chromosome);
+            //r.binomialMutateRepeat(0.01);
+            r.mutate(0.9);
+        }
+    }
     Random rand;
     private Rule rule;
     private BinaryConfMtx cm;
@@ -28,6 +43,20 @@ public class Individual {
         this.decoder = decoder;
         chromosome = new BinaryChromosome(signature.getBits());
         randomize();
+    }
+
+
+    private Individual() {
+        
+    }
+    public Individual copy() {
+        Individual c = new Individual();
+
+        c.chromosome = chromosome.copy();
+        c.signature = signature;
+        c.rand = rand;
+        c.decoder = decoder;
+        return c;
     }
 
     public void evaluate(UniformDataFrame<Integer, Integer> data,
@@ -93,39 +122,84 @@ public class Individual {
         return chromosome;
     }
 
-    void mutate(double mt) {
+    // sophisticated mutation
+    public void mutate(double mt) {
+        binomialMutateRepeat(mt);
+    }
+
+    private void mutateInter(double mt) {
         for (int i = 0; i < signature.getBits(); i++)
             if (rand.nextDouble() <= mt)
                 chromosome.set(i, !chromosome.get(i));
     }
+    private static InvCDFRandGenerator bin;
 
-    public int nextBinomial(int trials, double probability) {
-        if (trials * probability < 5.0
-                || trials * (1.0 - probability) < 5.0) {
-            // Not enough trials for a normal approximation.
+    void binomialMutateRepeat(double mt) {
+        updateBin(mt);
 
-            // Special case of probablity = 1/2.
-            // This might take less time than using nextDouble(), I
-            // haven't checked.
-            if (probability == 0.5) {
-                int successes = 0;
-                for (int count = 0; count < trials; count++) {
-                    successes += rand.nextBoolean() ? 1 : 0;
-                }
-                return successes;
-            } else {
-                int successes = 0;
-                for (int count = 0; count < trials; count++) {
-                    successes += rand.nextDouble() < probability ? 1 : 0;
-                }
-                return successes;
+        Set<Integer> previous = new HashSet<Integer>();
+        int bits = bin.nextBinomial();
+        Integer rm;
+        final int len = signature.getBits();
+        while (bits > 0) {
+            rm = rand.nextInt(len);
+            if (previous.contains(rm)) continue;
+
+            chromosome.set(rm, !chromosome.get(rm));
+            previous.add(rm);
+            bits--;
+        }
+    }
+
+    private void updateBin(double mt) {
+        if (bin == null)
+            bin = new InvCDFRandGenerator(signature.getBits(), mt, rand);
+        if (bin.getP() != mt)
+            bin = new InvCDFRandGenerator(signature.getBits(), mt, rand);
+    }
+
+    public static void main(String[] args) {
+//        testCorrectness();
+//        testSpeed();
+//        testSpeed();
+    }
+
+    public static void testSpeed() {
+        System.out.println("Testing bit by bit mutation");
+        int tests = 100000;
+        int reps = 5;
+
+        ExecutionContext c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
+        for (int j = 0; j < reps; j++) {
+            Individual r = new Individual(c.signature(), c.rand(), c.decoder());
+            long start = System.currentTimeMillis();
+            for (int i = 0; i < tests; i++) {
+                r.mutate(0.5d);
             }
-        } else {
-            // We can use a normal approximation
-            return (int) Math.floor(
-                    Math.sqrt(trials * probability * (1.0 - probability))
-                    * rand.nextGaussian() + 0.5 + probability * trials);
+
+            long stop = System.currentTimeMillis();
+            long durationMs = stop - start;
+            System.out.println("Duration of " + tests + " mutations: (ms) " + durationMs);
+        }
+
+        System.out.println("Binomial randomized without replacement with repeat");
+        int nureps = tests;
+        int steps = 10;
+        for (int j = 0; j <= steps; j++) {
+            double scaled = (double) j / (double) steps;
+            Individual r = new Individual(c.signature(), c.rand(), c.decoder());
+            long start = System.currentTimeMillis();
+            for (int i = 0; i < nureps; i++) {
+                r.binomialMutateRepeat(scaled);
+            }
+
+            long stop = System.currentTimeMillis();
+
+            long durationMs = stop - start;
+            System.out.println("Duration of " + tests + "(for MP=" + scaled + ") mutations: (ms) " + durationMs);
+
 
         }
+
     }
 }

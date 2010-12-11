@@ -10,6 +10,9 @@ public class BinaryChromosome implements Addressable {
 
     BitSet data;
     
+    private BinaryChromosome(BitSet data) {
+        this.data = data;
+    }
     public BinaryChromosome(int length) {
         data = new BitSet(length);
     }
@@ -25,5 +28,9 @@ public class BinaryChromosome implements Addressable {
     @Override
     public String toString() {
         return data.toString();
+    }
+
+    public BinaryChromosome copy() {
+        return new BinaryChromosome((BitSet)data.clone());
     }
 }

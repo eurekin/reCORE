@@ -1,10 +1,17 @@
 package core.ga;
 
+import core.DataSetBundle;
+import core.DataSetBundleFactory;
+import core.ExecutionContextFactory;
 import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.FitnessEval;
+import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.io.dataframe.UniformDataFrame;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  *
@@ -13,7 +20,7 @@ import java.util.List;
  */
 public class RulePopulation implements Iterable<Individual> {
 
-    final List<Individual> individuals;
+    List<Individual> individuals;
     final ExecutionContext context;
 
     public RulePopulation(ExecutionContext ctx) {
@@ -27,6 +34,9 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public void evolve() {
+        select();
+        crossover();
+        mutate();
     }
 
     public void evaluate(UniformDataFrame<Integer, Integer> data,
@@ -68,33 +78,79 @@ public class RulePopulation implements Iterable<Individual> {
         }
 
     }
+    private List<Individual> next;
 
-    public void binomialCDF(double p, int n) {
-        double q = 1 - p;
-        int xmin = 0;
-        int xmax = n;
-        double mean = n * p;
-        double stdev = Math.sqrt(n * p * q);
-        q = Math.max(q, 0.000001);
-        double pdf = Math.pow(q, n);
-        double[] CDF = new double[n];
-        CDF[0] = pdf;
-        int mode = 0;
-        int median = 0;
-        for (int i = 1; i <= n; i++) {
-            double fac = ((double) (n - i + 1) / (double) i) * (p / q);
-            if (fac > 1) {
-                mode = i;
-            }
-            pdf *= fac;
-            CDF[i] = CDF[i - 1] + pdf;
-            if (CDF[i] <= 0.5001) {
-                median = i;
-            }
+    private void select() {
+        next = new ArrayList<Individual>(individuals.size());
+
+        double sumfit = 0, fit;
+        for (Individual el : individuals) {
+            fit = el.fitness();
+            sumfit += fit;
         }
-        if (CDF[median] < 1) {
-            median += (Math.abs(CDF[median] - 0.5) < .0001) ? 0.5 : 1;
+        double CDF[] = new double[individuals.size()];
+        double acc = 0;
+        for (int i = 0; i < CDF.length; i++) {
+            acc += individuals.get(i).fitness();
+            CDF[i] = acc / sumfit;
         }
-//  X = BI;
+        TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
+        for (int i = 0; i < CDF.length; i++) {
+            double d = CDF[i];
+            m.put(d, i);
+        }
+
+        for (int i = 0; i < individuals.size(); i++) {
+            int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
+            Individual copy = individuals.get(r).copy();
+            next.add(copy);
+        }
+        individuals = next;
+    }
+
+    public static void main(String[] args) {
+        ExecutionContext ec;
+        FitnessEval fit = FitnessEvaluatorFactory.EVAL_FMEASURE;
+        ec = ExecutionContextFactory.MONK(3, true, 1000, fit);
+        RulePopulation rp = new RulePopulation(ec);
+        rp.decode();
+        rp.repair();
+        rp.evaluate();
+        double fitSum = rp.fitSum();
+        System.out.print("fitSum = " + fitSum);
+
+        for (int i = 0; i < 100000; i++) {
+            rp.evolve();
+
+            rp.decode();
+            rp.repair();
+            rp.evaluate();
+
+            fitSum = rp.fitSum();
+            System.out.print("fitSum = " + fitSum);
+        double bestFit = rp.bestFit();
+            System.out.println("bestFit = " + bestFit);
+
+        }
+
+    }
+
+    private void crossover() {
+    }
+
+    private double fitSum() {
+        double sumfit = 0;
+        for (Individual i : individuals) {
+            sumfit += i.fitness();
+        }
+        return sumfit;
+    }
+
+    private double bestFit() {
+        double bf = 0;
+        for (Individual i : individuals) {
+            if (i.fitness() > bf) bf = i.fitness();
+        }
+        return bf;
     }
 }

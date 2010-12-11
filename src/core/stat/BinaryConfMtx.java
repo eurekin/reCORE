@@ -14,17 +14,23 @@ public class BinaryConfMtx {
     }
 
     public double precision() {
-        return (double) (tp) / (double) (tp + fp);
+        final int den = tp + fp;
+        if (den == 0) return 0;
+        return (double) (tp) / (double) (den);
     }
 
     public double recall() {
+        final int den = tp + fn;
+        if (den == 0) return 0;
         return (double) (tp) / (double) (tp + fn);
     }
 
     public double fMeasure() {
         final double precision = precision();
         final double recall = recall();
-        return 2 * precision * recall / (precision + recall);
+        final double den = precision + recall;
+        if (den == 0) return 0;
+        return 2 * precision * recall / (den);
     }
 
     public double COREwithPenalty(int totalTrainingInstances) {
