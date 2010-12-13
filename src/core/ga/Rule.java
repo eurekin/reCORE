@@ -20,13 +20,9 @@ public class Rule {
     public boolean apply(Object[] args) {
         for (int i = 0; i < args.length; i++) {
             Selector sel = sels.get(i);
-            if (!sel.on) {
-                continue;
-            }
+            if (!sel.on) continue;
             boolean result = sel.op.apply(sel.val, (Integer) (args[i]));
-            if (!result) {
-                return false;
-            }
+            if (!result) return false;
         }
         return true;
     }

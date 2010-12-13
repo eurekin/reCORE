@@ -1,14 +1,11 @@
 package core.ga;
 
-import core.DataSetBundle;
-import core.DataSetBundleFactory;
 import core.ExecutionContextFactory;
 import core.ga.ops.ec.ExecutionContext;
 import core.ga.ops.ec.FitnessEval;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.io.dataframe.UniformDataFrame;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
@@ -35,7 +32,7 @@ public class RulePopulation implements Iterable<Individual> {
 
     public void evolve() {
         select();
-        crossover();
+//        crossover(); TODO: when prove useful
         mutate();
     }
 
@@ -130,12 +127,7 @@ public class RulePopulation implements Iterable<Individual> {
             System.out.print("fitSum = " + fitSum);
         double bestFit = rp.bestFit();
             System.out.println("bestFit = " + bestFit);
-
         }
-
-    }
-
-    private void crossover() {
     }
 
     private double fitSum() {

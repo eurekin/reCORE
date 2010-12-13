@@ -55,7 +55,7 @@ public class ExecutionContext {
         return size;
     }
 
-    private double mt = 0.01;
+    private double mt = 0.00001;
 
     public double getMt() {
         return mt;
