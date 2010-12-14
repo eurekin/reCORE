@@ -17,11 +17,11 @@ public class Rule {
         this.clazz = clazzId;
     }
 
-    public boolean apply(Object[] args) {
-        for (int i = 0; i < args.length; i++) {
+    public boolean apply(List args) {
+        for (int i = 0; i < args.size(); i++) {
             Selector sel = sels.get(i);
             if (!sel.on) continue;
-            boolean result = sel.op.apply(sel.val, (Integer) (args[i]));
+            boolean result = sel.op.apply(sel.val, (Integer) (args.get(i)));
             if (!result) return false;
         }
         return true;

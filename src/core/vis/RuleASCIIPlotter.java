@@ -21,7 +21,7 @@ public class RuleASCIIPlotter {
     public String[][] plotRule(Rule rule) {
         String[][] datavis = initEmptyDataVis(c);
         for (List<Integer> comb : c.allCombinations()) {
-            boolean ok = rule.apply(comb.toArray());
+            boolean ok = rule.apply(comb);
             boolean mark = ok && rule.getClazz() == 1 || !ok && rule.getClazz() != 1;
             String s = mark ? "#" : " ";
             datavis[c.getY(comb)][c.getX(comb)] = s;

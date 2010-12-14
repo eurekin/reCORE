@@ -12,7 +12,12 @@ public class RuleSet {
     List<Rule> rules;
     int defaultClass;
 
-    public int apply(Object[] args) {
+    public RuleSet(List<Rule> rules, int defaultClass) {
+        this.rules = rules;
+        this.defaultClass = defaultClass;
+    }
+
+    public int apply(List args) {
         for (Rule rule : rules) {
             if (!rule.apply(args)) continue;
             return rule.getClazz();

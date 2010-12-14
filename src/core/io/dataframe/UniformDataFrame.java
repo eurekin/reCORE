@@ -66,5 +66,10 @@ public class UniformDataFrame<V, C> extends AbstractList<Row<V, C>> {
                 return attributes.size();
             }
         }
+
+        @Override
+        public String toString() {
+            return new AttrView().toString() + " => " + getClazz();
+        }
     }
 }

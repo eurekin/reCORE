@@ -1,5 +1,6 @@
 package core.ga;
 
+import core.copop.RuleSet;
 import core.io.dataframe.Row;
 import core.stat.BinaryConfMtx;
 
@@ -7,10 +8,10 @@ import core.stat.BinaryConfMtx;
  *
  * @author Rekin
  */
-public class BinaryEvaluator implements Evaluator {
+public class DefaultEvaluator implements Evaluator {
 
     public void evaluate(Rule rule, Row<Integer, Integer> row, BinaryConfMtx cm) {
-        boolean predicted = rule.apply(row.getAtts().toArray());
+        boolean predicted = rule.apply(row.getAtts());
         boolean same = row.getClazz().equals(rule.getClazz());
 
         if (same) {
@@ -26,5 +27,11 @@ public class BinaryEvaluator implements Evaluator {
                 cm.tn++;
             }
         }
+    }
+    public void evaluate(RuleSet rs, Row<Integer, Integer> row, ConfMtx cm) {
+        int expected = row.getClazz();
+        int predicted = rs.apply(row.getAtts());
+        cm.add(expected, predicted);
+
     }
 }

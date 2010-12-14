@@ -1,6 +1,6 @@
 package core;
 
-import core.ga.BinaryEvaluator;
+import core.ga.DefaultEvaluator;
 import core.ga.GrayBinaryDecoderPlusONE;
 import core.ga.RuleDecoderSubractingOneFromClass;
 import core.ga.ops.ec.ExecutionContext;
@@ -20,7 +20,7 @@ public class ExecutionContextFactory {
             int popsize, FitnessEval ruleFitEval) {
         final Random random = new Random();
         final DataSetBundle mb = DataSetBundleFactory.MONK(version, test);
-        final BinaryEvaluator eval = new BinaryEvaluator();
+        final DefaultEvaluator eval = new DefaultEvaluator();
         final GrayBinaryDecoderPlusONE bdec = new GrayBinaryDecoderPlusONE();
         final RuleDecoderSubractingOneFromClass dec =
                 new RuleDecoderSubractingOneFromClass(mb.getSignature(), bdec);

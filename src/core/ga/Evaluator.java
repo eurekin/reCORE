@@ -8,7 +8,7 @@ import core.stat.BinaryConfMtx;
  *
  * @author Rekin
  */
-public interface Evaluator {
+public interface Evaluator  {
 
     void evaluate(Rule rule, Row<Integer, Integer> row, BinaryConfMtx cm);
 
