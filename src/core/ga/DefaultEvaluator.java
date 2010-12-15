@@ -1,5 +1,6 @@
 package core.ga;
 
+import core.stat.ConfMtx;
 import core.copop.RuleSet;
 import core.io.dataframe.Row;
 import core.stat.BinaryConfMtx;

@@ -1,6 +1,8 @@
 package core.stat;
 
 /**
+ * Simple binary confusion matrix.
+ * Has some methods implementing most common classifying metrics.
  *
  * @author Rekin
  */
@@ -42,10 +44,16 @@ public class BinaryConfMtx {
     public String toString() {
         String f = "TPR: %.1f FPR: %.1f TP: %d FN: %d TN: %d FP: %d "
                 + "ACC: %.1f%% F: %.1f%% RCL: %.1f%% PRC: %.1f%%";
-        double tpr = (double) tp / (tp + fn) * 100.0;
-        double fpr = (double) fp / (fp + tn);
-        return String.format(f, tpr, fpr, tp, fn, tn, fp,
+        return String.format(f, tpr() * 100, fpr() * 100, tp, fn, tn, fp,
                 accuracy() * 100, fMeasure() * 100,
                 recall() * 100, precision() * 100);
+    }
+
+    public double fpr() {
+        return (double) fp / (fp + tn);
+    }
+
+    public double tpr() {
+        return (double) tp / (tp + fn);
     }
 }

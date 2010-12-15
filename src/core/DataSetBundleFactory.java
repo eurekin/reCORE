@@ -22,7 +22,7 @@ public class DataSetBundleFactory {
         RuleChromosomeSignature signature = signatureFor(data);
         RulePrinter printer = getMonkPrinter();
         RuleASCIIPlotter plotter = new RuleASCIIPlotter(signature);
-        String s = "MONK M" + no + " - "+(train ? "train" : "test");
+        String s = "MONK M" + no + " - " + (train ? "train" : "test");
         return new DataSetBundle(data, plotter, signature, printer, s);
     }
 

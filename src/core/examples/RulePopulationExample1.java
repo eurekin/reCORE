@@ -18,7 +18,7 @@ import static java.lang.System.*;
  *
  * @author Rekin
  */
-public class RulePopulationExample {
+public class RulePopulationExample1 {
 
     public static final Scanner scanner = new Scanner(in);
 

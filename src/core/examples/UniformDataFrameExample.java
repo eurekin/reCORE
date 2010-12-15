@@ -1,5 +1,6 @@
-package core;
+package core.examples;
 
+import core.DataSetFactory;
 import core.io.dataframe.Row;
 import core.io.dataframe.Mapper;
 import core.io.dataframe.UniformDataFrame;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author Rekin
  */
-public class CORE_2 {
+public class UniformDataFrameExample {
 
     public static void main(String[] args) {
         System.out.println("\n\n\nData set:");
