@@ -16,6 +16,7 @@ public class RulePopulation implements Iterable<Individual> {
 
     List<Individual> individuals;
     final ExecutionContext context;
+    private List<Individual> next;
 
     public RulePopulation(ExecutionContext ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
@@ -29,7 +30,6 @@ public class RulePopulation implements Iterable<Individual> {
 
     public void evolve() {
         select();
-//        crossover(); TODO: when prove useful
         mutate();
     }
 
@@ -72,28 +72,26 @@ public class RulePopulation implements Iterable<Individual> {
         }
 
     }
-    private List<Individual> next;
 
     private void select() {
         next = new ArrayList<Individual>(individuals.size());
-
+        TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
+        double CDF[] = new double[individuals.size()];
+        double acc = 0;
         double sumfit = 0, fit;
+
         for (Individual el : individuals) {
             fit = el.fitness();
             sumfit += fit;
         }
-        double CDF[] = new double[individuals.size()];
-        double acc = 0;
         for (int i = 0; i < CDF.length; i++) {
             acc += individuals.get(i).fitness();
             CDF[i] = acc / sumfit;
         }
-        TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
         for (int i = 0; i < CDF.length; i++) {
             double d = CDF[i];
             m.put(d, i);
         }
-
         for (int i = 0; i < individuals.size(); i++) {
             int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
             Individual copy = individuals.get(r).copy();
@@ -101,5 +99,4 @@ public class RulePopulation implements Iterable<Individual> {
         }
         individuals = next;
     }
-
 }

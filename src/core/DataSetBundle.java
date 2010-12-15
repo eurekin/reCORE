@@ -22,8 +22,8 @@ public class DataSetBundle {
             RulePrinter printer, String creationArgs) {
         this.data = data;
         this.plotter = plotter;
-        this.signature = signature;
         this.printer = printer;
+        this.signature = signature;
         this.creationArgs = creationArgs;
     }
 

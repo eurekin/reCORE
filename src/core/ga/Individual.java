@@ -1,11 +1,9 @@
 package core.ga;
 
 import core.BinaryChromosome;
-import core.binomial.InvCDFRandGenerator;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.BinaryConfMtx;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -14,14 +12,15 @@ import java.util.Set;
  *
  * @author Rekin
  */
-public class Individual {
+public class Individual implements Mutable  {
 
-    Random rand;
     private Rule rule;
+    private Random rand;
+    private Mutator mutator;
     private BinaryConfMtx cm;
     private BinaryChromosome chromosome;
-    RuleChromosomeSignature signature;
-    RuleDecoderSubractingOneFromClass decoder;
+    private RuleChromosomeSignature signature;
+    private RuleDecoderSubractingOneFromClass decoder;
 
     public Individual() {
     }
@@ -31,13 +30,13 @@ public class Individual {
         this.signature = signature;
         this.rand = rand;
         this.decoder = decoder;
+        this.mutator = new Mutator(rand);
         chromosome = new BinaryChromosome(signature.getBits());
         randomize();
     }
 
     public Individual copy() {
         Individual c = new Individual();
-
         c.chromosome = chromosome.copy();
         c.signature = signature;
         c.rand = rand;
@@ -108,39 +107,20 @@ public class Individual {
         return chromosome;
     }
 
-    // sophisticated mutation
+    public void mutateAt(int i) {
+        chromosome.set(i, !chromosome.get(i));
+    }
+
+    public int size() {
+        return signature.getBits();
+    }
+
     public void mutate(double mt) {
-        binomialMutateRepeat(mt);
+        mutator.mutate(this, mt);
     }
 
+    // needed only for benchmark
     public void mutateInter(double mt) {
-        for (int i = 0; i < signature.getBits(); i++)
-            if (rand.nextDouble() <= mt)
-                chromosome.set(i, !chromosome.get(i));
-    }
-    private static InvCDFRandGenerator bin;
-
-    void binomialMutateRepeat(double mt) {
-        updateBin(mt);
-
-        Set<Integer> previous = new HashSet<Integer>();
-        int bits = bin.nextBinomial();
-        Integer rm;
-        final int len = signature.getBits();
-        while (bits > 0) {
-            rm = rand.nextInt(len);
-            if (previous.contains(rm)) continue;
-
-            chromosome.set(rm, !chromosome.get(rm));
-            previous.add(rm);
-            bits--;
-        }
-    }
-
-    private void updateBin(double mt) {
-        if (bin == null)
-            bin = new InvCDFRandGenerator(signature.getBits(), mt, rand);
-        if (bin.getP() != mt)
-            bin = new InvCDFRandGenerator(signature.getBits(), mt, rand);
+        mutator.mutateInter(this, mt);
     }
 }
