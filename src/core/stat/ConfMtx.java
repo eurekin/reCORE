@@ -40,18 +40,29 @@ public class ConfMtx {
         bcm.tp = cm[id][id];
 
         int acc = 0;
-        for (int i = 0; i < n; i++) acc += cm[id][i];
+        for (int i = 0; i < n; i++)
+            acc += cm[id][i];
         bcm.fn = acc - bcm.tp;
 
         acc = 0;
-        for (int i = 0; i < n; i++) acc += cm[i][id];
+        for (int i = 0; i < n; i++)
+            acc += cm[i][id];
         bcm.fp = acc - bcm.tp;
 
         bcm.tn = count - bcm.fn - bcm.fp - bcm.tp;
     }
 
-
     public BinaryConfMtx getWeighted() {
         return new AverageConfMtx(cms, count);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (BinaryConfMtx c : getCMes()) {
+            sb.append(c.toString()).append('\n');
+        }
+        sb.append("---\n").append(getWeighted().toString());
+        return sb.toString();
     }
 }

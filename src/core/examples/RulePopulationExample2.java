@@ -1,7 +1,6 @@
 package core.examples;
 
 import core.ExecutionContextFactory;
-import core.ga.Individual;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionContext;
 import core.ga.ops.ec.FitnessEval;
@@ -21,8 +20,6 @@ public class RulePopulationExample2 {
         rp.decode();
         rp.repair();
         rp.evaluate();
-        double fitSum = fitSum(rp);
-        System.out.print("fitSum = " + fitSum);
 
         for (int i = 0; i < 100000; i++) {
             rp.evolve();
@@ -31,26 +28,7 @@ public class RulePopulationExample2 {
             rp.repair();
             rp.evaluate();
 
-            fitSum = fitSum(rp);
-            System.out.print("fitSum = " + fitSum);
-            double bestFit = bestFit(rp);
-            System.out.println("bestFit = " + bestFit);
+            System.out.println(rp.stats());
         }
-    }
-
-    private static double fitSum(RulePopulation rp) {
-        double sumfit = 0;
-        for (Individual i : rp) {
-            sumfit += i.fitness();
-        }
-        return sumfit;
-    }
-
-    private static double bestFit(RulePopulation rp) {
-        double bf = 0;
-        for (Individual i : rp) {
-            if (i.fitness() > bf) bf = i.fitness();
-        }
-        return bf;
     }
 }

@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @author Rekin
  */
-public class Individual implements Mutable  {
+public class Individual implements Mutable {
 
     private Rule rule;
     private Random rand;
@@ -26,11 +26,11 @@ public class Individual implements Mutable  {
     }
 
     public Individual(RuleChromosomeSignature signature, Random rand,
-            RuleDecoderSubractingOneFromClass decoder) {
+            RuleDecoderSubractingOneFromClass decoder, Mutator mutator) {
         this.signature = signature;
         this.rand = rand;
         this.decoder = decoder;
-        this.mutator = new Mutator(rand);
+        this.mutator = mutator;
         chromosome = new BinaryChromosome(signature.getBits());
         randomize();
     }
@@ -41,15 +41,15 @@ public class Individual implements Mutable  {
         c.signature = signature;
         c.rand = rand;
         c.decoder = decoder;
+        c.mutator = mutator;
         return c;
     }
 
     public void evaluate(UniformDataFrame<Integer, Integer> data,
             Evaluator evaluator) {
         cm = new BinaryConfMtx();
-        for (Row<Integer, Integer> row : data) {
+        for (Row<Integer, Integer> row : data)
             evaluator.evaluate(rule(), row, cm);
-        }
     }
 
     public void decode(RuleDecoderSubractingOneFromClass decoder) {
@@ -82,16 +82,10 @@ public class Individual implements Mutable  {
         }
     }
 
-    /**
-     * @return the rule
-     */
     public Rule rule() {
         return rule;
     }
 
-    /**
-     * @return the cm
-     */
     public BinaryConfMtx cm() {
         return cm;
     }
@@ -100,9 +94,6 @@ public class Individual implements Mutable  {
         return cm.fMeasure();
     }
 
-    /**
-     * @return the chromosome
-     */
     public BinaryChromosome chromosome() {
         return chromosome;
     }

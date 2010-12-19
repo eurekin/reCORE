@@ -17,13 +17,15 @@ public class BinaryConfMtx {
 
     public double precision() {
         final double den = tp + fp;
-        if (den == 0.) return 0;
+        if (den == 0.)
+            return 0;
         return (double) (tp) / (double) (den);
     }
 
     public double recall() {
         final double den = tp + fn;
-        if (den == 0.) return 0;
+        if (den == 0.)
+            return 0;
         return (double) (tp) / (double) (tp + fn);
     }
 
@@ -31,7 +33,8 @@ public class BinaryConfMtx {
         final double precision = precision();
         final double recall = recall();
         final double den = precision + recall;
-        if (den == 0.) return 0;
+        if (den == 0.)
+            return 0;
         return 2 * precision * recall / (den);
     }
 
@@ -42,18 +45,22 @@ public class BinaryConfMtx {
 
     @Override
     public String toString() {
-        String f = "TPR: %.1f FPR: %.1f TP: %d FN: %d TN: %d FP: %d "
-                + "ACC: %.1f%% F: %.1f%% RCL: %.1f%% PRC: %.1f%%";
+        String f = "TPR: %5.1f%% FPR: %5.1f%% TP: %4d FN: %4d TN: %4d FP: %4d "
+                   + "ACC: %5.1f%% F: %5.1f%% RCL: %5.1f%% PRC: %5.1f%%";
         return String.format(f, tpr() * 100, fpr() * 100, tp, fn, tn, fp,
                 accuracy() * 100, fMeasure() * 100,
                 recall() * 100, precision() * 100);
     }
 
     public double fpr() {
+        if (fp + tn == 0)
+            return 0;
         return (double) fp / (fp + tn);
     }
 
     public double tpr() {
+        if (tp + fn == 0)
+            return 0;
         return (double) tp / (tp + fn);
     }
 }

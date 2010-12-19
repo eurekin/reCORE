@@ -41,7 +41,7 @@ public class FluentBulders {
         return new RuleSet(new ArrayList<Rule>(Arrays.asList(rules)), clazz);
     }
 
-    public static RuleBuilder Rule() {
+    public static RuleBuilder rule() {
         return new RuleBuilder();
     }
 

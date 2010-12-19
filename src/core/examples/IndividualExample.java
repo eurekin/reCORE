@@ -2,8 +2,10 @@ package core.examples;
 
 import core.ExecutionContextFactory;
 import core.ga.Individual;
+import core.ga.Mutator;
 import core.ga.ops.ec.ExecutionContext;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
+import java.util.Random;
 
 /**
  *
@@ -20,7 +22,7 @@ public class IndividualExample {
     public static void testCorrectness() {
         int times = 100;
         ExecutionContext c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
-        Individual r = new Individual(c.signature(), c.rand(), c.decoder());
+        Individual r = new Individual(c.signature(), c.rand(), c.decoder(), new Mutator(new Random()));
         for (int i = 0; i < times; i++) {
             System.out.println(r.chromosome());
             //r.binomialMutateRepeat(0.01);
@@ -35,7 +37,7 @@ public class IndividualExample {
 
         ExecutionContext c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
         for (int j = 0; j < reps; j++) {
-            Individual r = new Individual(c.signature(), c.rand(), c.decoder());
+            Individual r = new Individual(c.signature(), c.rand(), c.decoder(), new Mutator(new Random()));
             long start = System.currentTimeMillis();
             for (int i = 0; i < tests; i++) {
                 r.mutateInter(0.5d);
@@ -51,7 +53,7 @@ public class IndividualExample {
         int steps = 10;
         for (int j = 0; j <= steps; j++) {
             double scaled = (double) j / (double) steps;
-            Individual r = new Individual(c.signature(), c.rand(), c.decoder());
+            Individual r = new Individual(c.signature(), c.rand(), c.decoder(), new Mutator(new Random()));
             long start = System.currentTimeMillis();
             for (int i = 0; i < nureps; i++) {
                 r.mutate(scaled);

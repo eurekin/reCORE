@@ -31,6 +31,10 @@ public class ExecutionContext {
         this.ruleFitEval = ruleFitEval;
     }
 
+    public DataSetBundle getBundle() {
+        return bundle;
+    }
+
     public UniformDataFrame<Integer, Integer> data() {
         return bundle.getData();
     }
@@ -54,7 +58,6 @@ public class ExecutionContext {
     public int size() {
         return size;
     }
-
     private double mt = 0.00001;
 
     public double getMt() {
@@ -64,5 +67,4 @@ public class ExecutionContext {
     public void setMt(double mt) {
         this.mt = mt;
     }
-    
 }

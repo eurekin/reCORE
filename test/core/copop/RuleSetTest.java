@@ -11,9 +11,9 @@ import static org.junit.Assert.*;
 public class RuleSetTest {
 
     RuleSet rs = makeRuleSet(666,
-            Rule().in(3).clazz(1),
-            Rule().in(9).clazz(2),
-            Rule().in(1).clazz(3));
+            rule().in(3).clazz(1),
+            rule().in(9).clazz(2),
+            rule().in(1).clazz(3));
 
     @Test
     public void testFallback() {

@@ -2,6 +2,7 @@ package core.ga;
 
 import core.ga.ops.ec.ExecutionContext;
 import core.io.dataframe.UniformDataFrame;
+import core.stat.SimpleStatistics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,8 +22,9 @@ public class RulePopulation implements Iterable<Individual> {
     public RulePopulation(ExecutionContext ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
         Individual ind;
+        Mutator mutator = new Mutator(ctx.rand());
         for (int i = 0; i < ctx.size(); i++) {
-            ind = new Individual(ctx.signature(), ctx.rand(), ctx.decoder());
+            ind = new Individual(ctx.signature(), ctx.rand(), ctx.decoder(), mutator);
             individuals.add(ind);
         }
         this.context = ctx;
@@ -38,9 +40,8 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public void randomize() {
-        for (Individual ind : individuals) {
+        for (Individual ind : individuals)
             ind.randomize();
-        }
     }
 
     public void repair() {
@@ -73,6 +74,10 @@ public class RulePopulation implements Iterable<Individual> {
 
     }
 
+    public List<Individual> getIndividuals() {
+        return individuals;
+    }
+
     private void select() {
         next = new ArrayList<Individual>(individuals.size());
         TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
@@ -98,5 +103,13 @@ public class RulePopulation implements Iterable<Individual> {
             next.add(copy);
         }
         individuals = next;
+    }
+
+    public SimpleStatistics stats() {
+        SimpleStatistics ss = new SimpleStatistics();
+        for (Individual i : individuals) {
+            ss.addValue(i.fitness());
+        }
+        return ss;
     }
 }
