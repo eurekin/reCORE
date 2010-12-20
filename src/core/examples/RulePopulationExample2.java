@@ -21,14 +21,14 @@ public class RulePopulationExample2 {
         rp.repair();
         rp.evaluate();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000; i++) {
             rp.evolve();
 
             rp.decode();
             rp.repair();
             rp.evaluate();
 
-            System.out.println(rp.stats());
+            System.out.printf("%4d. %s\n", i + 1, rp.stats());
         }
     }
 }
