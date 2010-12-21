@@ -1,14 +1,15 @@
 package core.copop;
 
+import core.DataSetBundle;
 import core.ExecutionContextFactory;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionContext;
 import core.ga.ops.ec.FitnessEval;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.stat.SimpleStatistics;
+import core.vis.RuleASCIIPlotter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -70,14 +71,17 @@ public class RuleSetPopulation {
         ec.setRsmp(0.01);
         ec.setMaxRuleSetLength(5);
 
-        long seed = System.currentTimeMillis();
+        long seed =  System.currentTimeMillis();
         ec.rand().setSeed(seed);
 
-        // successful seeds
+        // example successful seeds
         // 1292886991233
+        // 1292962795459
+        // 1292962881548
 
         RulePopulation rp = new RulePopulation(ec);
         RuleSetPopulation rsp = new RuleSetPopulation(1000, ec, rp);
+        final DataSetBundle bundle = ec.getBundle();
         rp.decode();
         rp.repair();
         rp.evaluate();
@@ -87,6 +91,7 @@ public class RuleSetPopulation {
         double best = 0;
         FitnessEval fevl;
         String pr;
+        RuleSet ruleSet;
         for (int i = 0; i < 100000; i++) {
             rp.evolve();
 
@@ -114,8 +119,11 @@ public class RuleSetPopulation {
                             System.out.println("Seed = " + seed);
                             System.out.println(ind);
                             System.out.println(ind.getCm().getWeighted());
-                            pr = ec.getBundle().getPrinter().print(ind.getRS());
-                            System.out.println(pr);
+                            ruleSet = ind.getRS();
+                            System.out.println(bundle.getPrinter().print(ruleSet));
+                            String[][] plot = bundle.getPlotter().plotRuleSet(ruleSet);
+                            System.out.println("Visualization: ");
+                            RuleASCIIPlotter.simplePlot(plot);
                         }
                     }
                 }

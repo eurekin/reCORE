@@ -1,5 +1,6 @@
 package core.vis;
 
+import core.copop.RuleSet;
 import core.ga.Rule;
 import core.ga.RuleChromosomeSignature;
 import java.util.List;
@@ -66,6 +67,16 @@ public class RuleASCIIPlotter {
             }
             System.out.println();
         }
+    }
+
+    public String[][] plotRuleSet(RuleSet rs) {
+        String[][] datavis = initEmptyDataVis(c);
+        for (List<Integer> comb : c.allCombinations()) {
+            int ok = rs.apply(comb);
+            String s = ok ==0 ? " " : "#";
+            datavis[c.getY(comb)][c.getX(comb)] = s;
+        }
+        return datavis;
     }
 
     public static String[][] getPlot(RuleChromosomeSignature sig, Plotable callable) {

@@ -2,6 +2,7 @@ package core.io.dataframe;
 
 import core.io.repr.col.Column;
 import java.util.AbstractList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,10 +28,17 @@ public class UniformDataFrame<V, C> extends AbstractList<Row<V, C>> {
         this.attributes = attributes;
         this.size = size;
     }
+    private final HashMap<Integer, RowImpl> mem = new HashMap<Integer, RowImpl>();
 
     @Override
     public Row<V, C> get(int index) {
-        return new RowImpl(index);
+        if (mem.containsKey(index)) {
+            return mem.get(index);
+        } else {
+            RowImpl ri = new RowImpl(index);
+            mem.put(index, ri);
+            return ri;
+        }
     }
 
     @Override
@@ -38,32 +46,44 @@ public class UniformDataFrame<V, C> extends AbstractList<Row<V, C>> {
         return size;
     }
 
-    private class RowImpl implements Row<V, C> {
+    private final class RowImpl implements Row<V, C> {
 
-        int index;
+        private final int index;
+        private final AttrView attrView = new AttrView();
+        private final C clazz;
 
         private RowImpl(int index) {
             this.index = index;
+            this.clazz = classColumn.get(index);
         }
 
         public C getClazz() {
-            return classColumn.get(index);
+            return clazz;
         }
 
         public List<V> getAtts() {
-            return new AttrView();
+            return attrView;
         }
 
-        private class AttrView extends AbstractList<V> {
+        private final class AttrView extends AbstractList<V> {
+
+            private final HashMap<Integer, V> mem = new HashMap<Integer, V>();
+            final int size1 = attributes.size();
 
             @Override
             public V get(int vid) {
-                return attributes.get(vid).get(index);
+                if (mem.containsKey(vid)) {
+                    return mem.get(vid);
+                } else {
+                    V value = attributes.get(vid).get(index);
+                    mem.put(vid, value);
+                    return value;
+                }
             }
 
             @Override
             public int size() {
-                return attributes.size();
+                return size1;
             }
         }
 
