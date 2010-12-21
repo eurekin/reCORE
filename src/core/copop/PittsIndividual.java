@@ -4,6 +4,8 @@ import core.ga.Evaluator;
 import core.ga.Individual;
 import core.ga.Mutator;
 import core.ga.Rule;
+import core.ga.RulePopulation;
+import core.ga.ops.ec.ExecutionContext;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.ConfMtx;
@@ -22,19 +24,37 @@ import java.util.Random;
  *
  * @author Rekin
  */
-public class PittsIndividual  {
+public class PittsIndividual {
 
     Random rand;
     private int ruleNo;
     private int clazzMax;
     private int maxLength;
     Mutator mutator;
-    List<Individual> rules;
+    RulePopulation rpop;
     ArrayList<Integer> list = new ArrayList<Integer>();
     HashSet<Integer> indexes = new HashSet<Integer>();
     private int clazz;
     private RuleSet ruleSet;
     private ConfMtx cm;
+
+    PittsIndividual(ExecutionContext ctx, RulePopulation rpop) {
+        this(ctx.rand(), ctx.maxRuleSetLength(), ctx.signature().getClassDomain().size(), rpop);
+    }
+
+    private PittsIndividual(Random rand,
+            int maxSize, int clazzMax, RulePopulation rpop) {
+        this.rand = rand;
+        this.rpop = rpop;
+        this.clazzMax = clazzMax;
+        this.maxLength = maxSize;
+        this.mutator = new Mutator(rand);
+
+        this.ruleNo = rpop.getIndividuals().size();
+        int ran = rand.nextInt(maxSize);
+        while ((ran--) > 0)
+            addInt();
+    }
 
     public ConfMtx getCm() {
         return cm;
@@ -46,27 +66,15 @@ public class PittsIndividual  {
         for (Row<Integer, Integer> row : data) {
             evaluator.evaluate(getRS(), row, cm);
         }
-    }
-
-    public PittsIndividual(Random rand,
-            int maxSize, int clazzMax, List<Individual> rules) {
-        this.rand = rand;
-        this.rules = rules;
-        this.clazzMax = clazzMax;
-        this.maxLength = maxSize;
-        this.mutator = new Mutator(rand);
-
-        this.ruleNo = rules.size();
-        int ran = rand.nextInt(maxSize);
-        while ((ran--) > 0)
-            addInt();
+        cm.getCMes();
     }
 
     public RuleSet getRS() {
         if (ruleSet == null) {
             List<Rule> rs = new ArrayList<Rule>();
+            final List<Individual> inds = rpop.getIndividuals();
             for (Integer i : list) {
-                rs.add(rules.get(i).rule());
+                rs.add(inds.get(i).rule());
             }
             ruleSet = new RuleSet(rs, clazz);
         }
@@ -111,6 +119,10 @@ public class PittsIndividual  {
 
     public void mutateClass() {
         clazz = rand.nextInt(clazzMax);
+    }
+
+    public void reset() {
+        ruleSet = null;
     }
 
     @Override

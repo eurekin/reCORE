@@ -24,4 +24,13 @@ public class RuleSet {
         }
         return defaultClass;
     }
+
+    public int getDefaultClass() {
+        return defaultClass;
+    }
+
+    public List<Rule> getRules() {
+        return rules;
+    }
+
 }

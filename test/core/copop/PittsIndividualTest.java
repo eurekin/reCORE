@@ -8,7 +8,6 @@ import core.ga.ops.ec.FitnessEval;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.ga.ops.ec.ExecutionContext;
 import core.ga.RulePopulation;
-import java.util.Random;
 import org.junit.Test;
 
 /**
@@ -28,7 +27,7 @@ public class PittsIndividualTest {
         rp.decode();
         rp.repair();
         rp.evaluate();
-        pi = new PittsIndividual(new Random(), 10, 2, rp.getIndividuals());
+        pi = new PittsIndividual(ec, rp);
     }
 
     @Test

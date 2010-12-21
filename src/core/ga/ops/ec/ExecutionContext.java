@@ -17,7 +17,7 @@ public class ExecutionContext {
     Random rand;
     Evaluator evaluator;
     DataSetBundle bundle;
-    FitnessEval ruleFitEval;
+    FitnessEval fitnessEvaluator;
     RuleDecoderSubractingOneFromClass decoder;
 
     public ExecutionContext(int size, Random rand, Evaluator evaluator,
@@ -28,7 +28,11 @@ public class ExecutionContext {
         this.bundle = bundle;
         this.decoder = decoder;
         this.evaluator = evaluator;
-        this.ruleFitEval = ruleFitEval;
+        this.fitnessEvaluator = ruleFitEval;
+    }
+
+    public FitnessEval fitnessEvaluator() {
+        return fitnessEvaluator;
     }
 
     public DataSetBundle getBundle() {
@@ -58,7 +62,7 @@ public class ExecutionContext {
     public int size() {
         return size;
     }
-    private double mt = 0.00001;
+    private double mt = 0.01;  // TODO: make an attribute out of it
 
     public double getMt() {
         return mt;
@@ -66,5 +70,25 @@ public class ExecutionContext {
 
     public void setMt(double mt) {
         this.mt = mt;
+    }
+
+    private double rsmp = 0.1;
+
+    public double getRsmp() {
+        return rsmp;
+    }
+
+    public void setRsmp(double rsmp) {
+        this.rsmp = rsmp;
+    }
+    
+    private int maxRuleSetLength = 10;
+
+    public int maxRuleSetLength() {
+        return maxRuleSetLength;
+    }
+
+    public void setMaxRuleSetLength(int length) {
+        this.maxRuleSetLength = length;
     }
 }

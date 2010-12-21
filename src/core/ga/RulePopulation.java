@@ -1,6 +1,7 @@
 package core.ga;
 
 import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.FitnessEval;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.SimpleStatistics;
 import java.util.ArrayList;
@@ -84,13 +85,14 @@ public class RulePopulation implements Iterable<Individual> {
         double CDF[] = new double[individuals.size()];
         double acc = 0;
         double sumfit = 0, fit;
+        FitnessEval fevl = context.fitnessEvaluator();
 
         for (Individual el : individuals) {
-            fit = el.fitness();
+            fit = fevl.eval(el.cm());
             sumfit += fit;
         }
         for (int i = 0; i < CDF.length; i++) {
-            acc += individuals.get(i).fitness();
+            acc += fevl.eval(individuals.get(i).cm());
             CDF[i] = acc / sumfit;
         }
         for (int i = 0; i < CDF.length; i++) {
@@ -106,9 +108,10 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public SimpleStatistics stats() {
+        FitnessEval fevl = context.fitnessEvaluator();
         SimpleStatistics ss = new SimpleStatistics();
         for (Individual i : individuals) {
-            ss.addValue(i.fitness());
+            ss.addValue(fevl.eval(i.cm()));
         }
         return ss;
     }

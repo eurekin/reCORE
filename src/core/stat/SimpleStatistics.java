@@ -4,9 +4,6 @@
  */
 package core.stat;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 /**
  * http://stackoverflow.com/questions/2633095/simple-java-library-for-storing-statistical-observations-and-calculating-statisti/2633692#2633692
  */

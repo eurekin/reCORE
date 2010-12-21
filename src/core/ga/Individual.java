@@ -90,10 +90,6 @@ public class Individual implements Mutable {
         return cm;
     }
 
-    public double fitness() {
-        return cm.fMeasure();
-    }
-
     public BinaryChromosome chromosome() {
         return chromosome;
     }

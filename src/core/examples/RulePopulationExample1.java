@@ -37,14 +37,15 @@ public class RulePopulationExample1 {
         pop.decode();
         pop.repair();
         pop.evaluate();
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 50000; i++) {
             pop.mutate();
             pop.decode();
             pop.repair();
             pop.evaluate();
             for (Individual ind : pop) {
-                double fitness = ind.fitness();
-                if (fitness >= max) {
+                double fitness = fite.eval(ind.cm());
+//                double fitness = ind.cm().fMeasure();
+                if (fitness > max) {
                     max = fitness;
                     out.printf("\n\n\n\nfitness  = %.3f\n", max);
                     out.println("measures = " + ind.cm());
