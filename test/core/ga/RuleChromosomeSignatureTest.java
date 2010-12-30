@@ -66,7 +66,7 @@ public class RuleChromosomeSignatureTest {
     @Test
     public void testGetClassSize() {
         RuleChromosomeSignature sig = new RuleChromosomeSignature(mockatts, classSet);
-        Integer expectedBits = 1;
+        Integer expectedBits = 2;
         assertEquals(expectedBits, sig.getClazzSize());
     }
 
