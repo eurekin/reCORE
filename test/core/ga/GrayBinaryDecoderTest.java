@@ -36,7 +36,7 @@ public class GrayBinaryDecoderTest {
         GrayBinaryDecoderPlusONE instance = new GrayBinaryDecoderPlusONE();
         for (int i = 0; i < testArray.length; i++) {
             int result = instance.decode(addressableFor(testArray[i]), 0, 4);
-            assertEquals(i, result);
+            assertEquals(i+1, result);
         }
     }
 }
