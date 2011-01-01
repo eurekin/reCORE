@@ -1,6 +1,8 @@
 package core.ga;
 
 import core.BinaryChromosome;
+import core.ga.ops.ec.FitnessEval;
+import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.BinaryConfMtx;
@@ -16,9 +18,11 @@ public class Individual implements Mutable {
 
     private Rule rule;
     private Random rand;
+    private double fitness;
     private Mutator mutator;
     private BinaryConfMtx cm;
     private BinaryChromosome chromosome;
+    private FitnessEval fitnessEvaluator = FitnessEvaluatorFactory.EVAL_FMEASURE;
     private RuleChromosomeSignature signature;
     private RuleDecoderSubractingOneFromClass decoder;
 
@@ -42,6 +46,8 @@ public class Individual implements Mutable {
         c.rand = rand;
         c.decoder = decoder;
         c.mutator = mutator;
+        c.tokens = 0;
+        c.territory = 0;
         return c;
     }
 
@@ -50,10 +56,12 @@ public class Individual implements Mutable {
         cm = new BinaryConfMtx();
         for (Row<Integer, Integer> row : data)
             evaluator.evaluate(rule(), row, cm);
+        fitness = fitnessEvaluator.eval(cm);
     }
 
     public void decode(RuleDecoderSubractingOneFromClass decoder) {
         rule = decoder.decode(chromosome);
+        rule.setIndividual(this);
     }
 
     public final void randomize() {
@@ -109,5 +117,21 @@ public class Individual implements Mutable {
     // needed only for benchmark
     public void mutateInter(double mt) {
         mutator.mutateInter(this, mt);
+    }
+    
+    // token competition
+    private int territory = 0;
+    private int tokens = 0;
+
+    public void increaseTerritory() {
+        territory++;
+    }
+
+    public void rewardToken() {
+        tokens++;
+    }
+
+    double fitness() {
+        return fitness;
     }
 }

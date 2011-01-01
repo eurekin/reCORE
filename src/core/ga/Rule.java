@@ -11,6 +11,7 @@ public class Rule {
     List<Selector> sels;
     List<Selector> rsels;
     int clazz;
+    private Individual individual;
 
     public Rule(List<Selector> sels, int clazzId) {
         this.sels = sels;
@@ -53,5 +54,13 @@ public class Rule {
 
     public List<Selector> getAllSelectors() {
         return sels;
+    }
+
+    public void setIndividual(Individual aThis) {
+        this.individual = aThis;
+    }
+
+    public Individual individual() {
+        return individual;
     }
 }

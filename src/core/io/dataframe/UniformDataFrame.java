@@ -65,6 +65,10 @@ public class UniformDataFrame<V, C> extends AbstractList<Row<V, C>> {
             return attrView;
         }
 
+        public int getId() {
+            return index;
+        }
+
         private final class AttrView extends AbstractList<V> {
 
             private final HashMap<Integer, V> mem = new HashMap<Integer, V>();

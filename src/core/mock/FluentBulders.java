@@ -15,12 +15,15 @@ import java.util.List;
  */
 public class FluentBulders {
 
-    public static List<Integer> ints(Integer ... ints) {
+    public static List<Integer> ints(Integer... ints) {
         return Arrays.asList(ints);
     }
+    private static int rowsofar = 0;
 
     public static Row<Integer, Integer> makeRow(final int clazz, final Integer... attrs) {
         return new Row<Integer, Integer>() {
+
+            private final int id = (rowsofar++);
 
             public Integer getClazz() {
                 return clazz;
@@ -33,6 +36,10 @@ public class FluentBulders {
             @Override
             public String toString() {
                 return getAtts() + " => " + getClazz();
+            }
+
+            public int getId() {
+                return id;
             }
         };
     }

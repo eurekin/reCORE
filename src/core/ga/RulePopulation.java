@@ -84,21 +84,16 @@ public class RulePopulation implements Iterable<Individual> {
         TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
         double CDF[] = new double[individuals.size()];
         double acc = 0;
-        double sumfit = 0, fit;
-        FitnessEval fevl = context.fitnessEvaluator();
+        double sumfit = 0;
 
-        for (Individual el : individuals) {
-            fit = fevl.eval(el.cm());
-            sumfit += fit;
-        }
+        for (Individual el : individuals)
+            sumfit += el.fitness();
         for (int i = 0; i < CDF.length; i++) {
-            acc += fevl.eval(individuals.get(i).cm());
+            acc += individuals.get(i).fitness();
             CDF[i] = acc / sumfit;
         }
-        for (int i = 0; i < CDF.length; i++) {
-            double d = CDF[i];
-            m.put(d, i);
-        }
+        for (int i = 0; i < CDF.length; i++)
+            m.put(CDF[i], i);
         for (int i = 0; i < individuals.size(); i++) {
             int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
             Individual copy = individuals.get(r).copy();
