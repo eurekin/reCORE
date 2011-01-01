@@ -2,6 +2,7 @@ package core.copop;
 
 import core.ga.Evaluator;
 import core.ga.Individual;
+import core.ga.Mutable;
 import core.ga.Mutator;
 import core.ga.Rule;
 import core.ga.RulePopulation;
@@ -24,7 +25,7 @@ import java.util.Random;
  *
  * @author Rekin
  */
-public class PittsIndividual {
+public class PittsIndividual implements Mutable {
 
     Random rand;
     private int ruleNo;
@@ -117,8 +118,9 @@ public class PittsIndividual {
         return el;
     }
 
-    public void mutateClass() {
-        clazz = rand.nextInt(clazzMax);
+    public void mutateClass(double mprob) {
+        if (rand.nextDouble() <= mprob)
+            clazz = rand.nextInt(clazzMax);
     }
 
     public void reset() {
@@ -129,4 +131,21 @@ public class PittsIndividual {
     public String toString() {
         return indexes.toString() + " " + list.toString() + " " + clazz;
     }
+
+    void mutate(double mprob) {
+        mutator.mutate(this, mprob);
+    }
+
+    public void mutateAt(int i) {
+        Integer r = getNewRandomUnique();
+        Integer toRemove = list.get(i);
+        indexes.remove(toRemove);
+        indexes.add(r);
+        list.set(i, r);
+    }
+
+    public int size() {
+        return indexes.size();
+    }
+
 }

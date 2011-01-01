@@ -28,7 +28,8 @@ public class RuleSetPopulation {
         final double mprob = context.getRsmp();
         for (PittsIndividual i : getIndividuals()) {
             i.addOrRemoveWith(mprob);
-            i.mutateClass();
+            i.mutateClass(mprob);
+            i.mutate(mprob);
         }
     }
 

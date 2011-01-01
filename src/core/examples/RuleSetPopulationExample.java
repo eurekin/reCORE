@@ -21,10 +21,10 @@ public class RuleSetPopulationExample {
     public static void main(String[] args) {
         ExecutionContext ec;
         FitnessEval fit = FitnessEvaluatorFactory.EVAL_FMEASURE;
-        ec = ExecutionContextFactory.MONK(3, true, 1000, fit);
+        ec = ExecutionContextFactory.MONK(3, false, 1000, fit);
 
-        ec.setMt(0.002);
-        ec.setRsmp(0.01);
+        ec.setMt(0.02);
+        ec.setRsmp(0.001);
         ec.setMaxRuleSetLength(5);
 
         long seed = System.currentTimeMillis();
@@ -70,14 +70,15 @@ public class RuleSetPopulationExample {
                 best = measure(ruleSetStats);
                 System.out.printf("%4d.  RULE: %s", i + 1, ruleStats);
                 System.out.println("   RULESET stats: " + ruleSetStats);
+                final double max = ruleSetStats.getMax();
 
-                if (ruleSetStats.getMax() > ruleStats.getMax()) {
+                if (max > ruleStats.getMax()) {
                     System.out.println("Congratulations!");
                     java.awt.Toolkit.getDefaultToolkit().beep();
                     fevl = ec.fitnessEvaluator();
                     for (PittsIndividual ind : rsp.getIndividuals()) {
                         final double eval = fevl.eval(ind.getCm().getWeighted());
-                        if (eval > ruleStats.getMax()) {
+                        if (eval == max) {
                             System.out.println("HERE");
                             System.out.println("Seed = " + seed);
                             System.out.println(ind);

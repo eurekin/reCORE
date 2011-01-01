@@ -20,7 +20,12 @@ public class Mutator {
 
     // sophisticated mutation
     public void mutate(Mutable mutable, double mt) {
-        binomialMutateRepeat(mutable, mt);
+        if (mutable.size() == 0)
+            return;
+        if (mutable.size() > 5)
+            binomialMutateRepeat(mutable, mt);
+        else
+            mutateInter(mutable, mt);
     }
 
     public void mutateInter(Mutable mutable, double mt) {
@@ -38,7 +43,8 @@ public class Mutator {
         final int len = mutable.size();
         while (bits > 0) {
             rm = rand.nextInt(len);
-            if (previous.contains(rm)) continue;
+            if (previous.contains(rm))
+                continue;
 
             mutable.mutateAt(rm);
             previous.add(rm);
