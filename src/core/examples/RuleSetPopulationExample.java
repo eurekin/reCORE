@@ -21,7 +21,7 @@ public class RuleSetPopulationExample {
     public static void main(String[] args) {
         ExecutionContext ec;
         FitnessEval fit = FitnessEvaluatorFactory.EVAL_FMEASURE;
-        ec = ExecutionContextFactory.MONK(3, false, 1000, fit);
+        ec = ExecutionContextFactory.MONK(3, true, 1000, fit);
 
         ec.setMt(0.02);
         ec.setRsmp(0.001);

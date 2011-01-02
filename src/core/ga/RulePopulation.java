@@ -2,8 +2,9 @@ package core.ga;
 
 import core.ga.ops.ec.ExecutionContext;
 import core.ga.ops.ec.FitnessEval;
-import core.io.dataframe.UniformDataFrame;
 import core.stat.SimpleStatistics;
+import core.token.TokenCompetition;
+import core.token.TokenizingEvaluator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,13 +20,15 @@ public class RulePopulation implements Iterable<Individual> {
     List<Individual> individuals;
     final ExecutionContext context;
     private List<Individual> next;
+    private boolean tokenCompetition = true;
 
     public RulePopulation(ExecutionContext ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
         Individual ind;
         Mutator mutator = new Mutator(ctx.rand());
         for (int i = 0; i < ctx.size(); i++) {
-            ind = new Individual(ctx.signature(), ctx.rand(), ctx.decoder(), mutator);
+            ind = new Individual(ctx.signature(), ctx.rand(),
+                    ctx.decoder(), mutator, ctx.fitnessEvaluator());
             individuals.add(ind);
         }
         this.context = ctx;
@@ -34,10 +37,6 @@ public class RulePopulation implements Iterable<Individual> {
     public void evolve() {
         select();
         mutate();
-    }
-
-    public void evaluate(UniformDataFrame<Integer, Integer> data,
-            Evaluator evaluator) {
     }
 
     public void randomize() {
@@ -58,6 +57,23 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public void evaluate() {
+        if (tokenCompetition)
+            tokenCompetitionUpdate();
+        else
+            normalEvaluate();
+    }
+
+    private void tokenCompetitionUpdate() {
+        TokenCompetition comp = new TokenCompetition(context.data().size());
+        TokenizingEvaluator evaluator = new TokenizingEvaluator(comp);
+        for (Individual ind : individuals)
+            ind.evaluate(context.data(), evaluator);
+        comp.giveOutTokens();
+        for (Individual individual : individuals)
+            individual.penalizeToken();
+    }
+
+    private void normalEvaluate() {
         for (Individual ind : individuals) {
             ind.evaluate(context.data(), context.evaluator());
         }

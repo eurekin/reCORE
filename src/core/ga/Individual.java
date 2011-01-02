@@ -22,7 +22,7 @@ public class Individual implements Mutable {
     private Mutator mutator;
     private BinaryConfMtx cm;
     private BinaryChromosome chromosome;
-    private FitnessEval fitnessEvaluator = FitnessEvaluatorFactory.EVAL_FMEASURE;
+    private FitnessEval fitnessEvaluator;
     private RuleChromosomeSignature signature;
     private RuleDecoderSubractingOneFromClass decoder;
 
@@ -30,17 +30,20 @@ public class Individual implements Mutable {
     }
 
     public Individual(RuleChromosomeSignature signature, Random rand,
-            RuleDecoderSubractingOneFromClass decoder, Mutator mutator) {
+            RuleDecoderSubractingOneFromClass decoder, Mutator mutator,
+            FitnessEval fitnessEvaluator) {
         this.signature = signature;
         this.rand = rand;
         this.decoder = decoder;
         this.mutator = mutator;
+        this.fitnessEvaluator = fitnessEvaluator;
         chromosome = new BinaryChromosome(signature.getBits());
         randomize();
     }
 
     public Individual copy() {
         Individual c = new Individual();
+        c.fitnessEvaluator = fitnessEvaluator;
         c.chromosome = chromosome.copy();
         c.signature = signature;
         c.rand = rand;
@@ -118,7 +121,6 @@ public class Individual implements Mutable {
     public void mutateInter(double mt) {
         mutator.mutateInter(this, mt);
     }
-    
     // token competition
     private int territory = 0;
     private int tokens = 0;
@@ -131,7 +133,13 @@ public class Individual implements Mutable {
         tokens++;
     }
 
-    double fitness() {
+    public void penalizeToken() {
+//        System.out.printf("Penalizing fit=%.3f tok=%d ter=%d", fitness, tokens, territory);
+        fitness *= (double) (tokens+1) / (double) territory;
+//        System.out.printf(" newfit=%.3f\n", fitness);
+    }
+
+    public double fitness() {
         return fitness;
     }
 }

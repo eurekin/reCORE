@@ -62,7 +62,7 @@ public class ExecutionContext {
     public int size() {
         return size;
     }
-    private double mt = 0.01;  // TODO: make an attribute out of it
+    private double mt = 0.01; 
 
     public double getMt() {
         return mt;
