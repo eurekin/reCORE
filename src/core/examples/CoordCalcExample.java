@@ -30,7 +30,7 @@ public class CoordCalcExample {
         List<Integer> answer;
         for (Integer[] integers : monk) {
             final List<Integer> l = Arrays.asList(integers);
-            lists.add(new ArrayList(l));
+            lists.add(new ArrayList<Integer>(l));
             sets.add(new HashSet(l));
         }
         CoordCalc tda = new CoordCalc(sets);

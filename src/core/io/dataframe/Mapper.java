@@ -104,7 +104,7 @@ public class Mapper {
     }
 
     private void balanceOutKeysInAbsenceOf(Integer key) {
-        Set<Integer> keys = new HashSet(valmap.keySet());
+        Set<Integer> keys = new HashSet<Integer>(valmap.keySet());
         for (Integer ck : keys) {
             if (ck < key) {
                 continue;

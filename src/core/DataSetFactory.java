@@ -39,7 +39,6 @@ public class DataSetFactory {
         for (int i = 1; i < 7; i++) { // column 0 - class
             attrs.add(filled.getColumns().get(i));
         }
-
         return new UniformDataFrame<Integer, Integer>(classCol, attrs, cons.getCount());
     }
 

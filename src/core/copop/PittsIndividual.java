@@ -9,8 +9,11 @@ import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionContext;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
+import core.stat.BinaryConfMtx;
 import core.stat.ConfMtx;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -38,9 +41,11 @@ public class PittsIndividual implements Mutable {
     private int clazz;
     private RuleSet ruleSet;
     private ConfMtx cm;
+    private ExecutionContext ctx;
 
     PittsIndividual(ExecutionContext ctx, RulePopulation rpop) {
         this(ctx.rand(), ctx.maxRuleSetLength(), ctx.signature().getClassDomain().size(), rpop);
+        this.ctx = ctx;
     }
 
     private PittsIndividual(Random rand,
@@ -55,6 +60,26 @@ public class PittsIndividual implements Mutable {
         int ran = rand.nextInt(maxSize);
         while ((ran--) > 0)
             addInt();
+    }
+
+    private PittsIndividual() {
+    }
+
+    public PittsIndividual copy() {
+        PittsIndividual copy = new PittsIndividual();
+        copy.rand = rand;
+        copy.rpop = rpop;
+        copy.clazzMax = clazzMax;
+        copy.maxLength = maxLength;
+        copy.mutator = mutator;
+        copy.ruleNo = ruleNo;
+        copy.list = list;
+        copy.indexes = indexes;
+        copy.clazz = clazz;
+        copy.ruleSet = ruleSet;
+        copy.cm = cm;
+        copy.ctx = ctx;
+        return copy;
     }
 
     public ConfMtx getCm() {
@@ -72,11 +97,20 @@ public class PittsIndividual implements Mutable {
 
     public RuleSet getRS() {
         if (ruleSet == null) {
+
             List<Rule> rs = new ArrayList<Rule>();
             final List<Individual> inds = rpop.getIndividuals();
             for (Integer i : list) {
                 rs.add(inds.get(i).rule());
             }
+//            Collections.sort(rs, new Comparator<Rule>() {
+//
+//                public int compare(Rule o1, Rule o2) {
+//                    BinaryConfMtx cm1 = o1.individual().cm();
+//                    BinaryConfMtx cm2 = o2.individual().cm();
+//                    return -Double.compare(cm1.fn+cm1.fp, cm2.fn + cm2.fp);
+//                }
+//            });
             ruleSet = new RuleSet(rs, clazz);
         }
         return ruleSet;
@@ -148,4 +182,7 @@ public class PittsIndividual implements Mutable {
         return indexes.size();
     }
 
+    public double fitness() {
+        return ctx.fitnessEvaluator().eval(getCm().getWeighted());
+    }
 }

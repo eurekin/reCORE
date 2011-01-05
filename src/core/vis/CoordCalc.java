@@ -108,9 +108,9 @@ public class CoordCalc {
     }
 
     public Iterable<List<Integer>> allCombinations() {
-        return new Iterable() {
+        return new Iterable<List<Integer>>() {
 
-            public Iterator iterator() {
+            public Iterator<List<Integer>> iterator() {
                 return new CombinationIt();
             }
         };

@@ -28,7 +28,7 @@ public class DataSetBundleFactory {
 
     public static RuleChromosomeSignature signatureFor(UniformDataFrame<Integer, Integer> df) {
         List<Column<Integer>> cols = df.getAttributes();
-        ArrayList<DomainMemoizable> cwd = new ArrayList(getColsWithDomain(cols));
+        ArrayList<DomainMemoizable> cwd = new ArrayList<DomainMemoizable>(getColsWithDomain(cols));
         return new RuleChromosomeSignature(cwd, (DomainMemoizable) df.getClassColumn());
     }
 

@@ -47,7 +47,7 @@ public class RuleASCIIPlotter {
         return datavis;
     }
 
-    private static String[][] initEmptyDataVis(CoordCalc c) {
+    public static String[][] initEmptyDataVis(CoordCalc c) {
         String[][] datavis = new String[c.getHeight()][];
         for (int i = 0; i < datavis.length; i++) {
             datavis[i] = new String[c.getWidth()];

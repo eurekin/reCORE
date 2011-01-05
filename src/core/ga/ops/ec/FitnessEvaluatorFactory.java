@@ -18,7 +18,7 @@ public class FitnessEvaluatorFactory {
     public static final FitnessEval EVAL_PRECISION = new Precision();
     public static final FitnessEval EVAL_MCC = new Mathews();
     public static final Set<FitnessEval> EVALS =
-            Collections.unmodifiableSet(new HashSet(
+            Collections.unmodifiableSet(new HashSet<FitnessEval>(
             Arrays.asList(new FitnessEval[]{
                 EVAL_ACCURACY,
                 EVAL_FMEASURE,
