@@ -16,6 +16,6 @@ public class GrayBinaryDecoderPlusONE implements BinaryDecoder {
                 d++;
             }
         }
-        return d + 1;
+        return d  + 1;
     }
 }

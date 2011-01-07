@@ -91,4 +91,10 @@ public class ExecutionContext {
     public void setMaxRuleSetLength(int length) {
         this.maxRuleSetLength = length;
     }
+
+    public void setBundle(DataSetBundle bundle) {
+        this.bundle = bundle;
+    }
+
+    
 }

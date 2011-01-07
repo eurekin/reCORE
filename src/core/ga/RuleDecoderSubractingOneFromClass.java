@@ -34,22 +34,10 @@ public class RuleDecoderSubractingOneFromClass {
         Integer[] adrs = sig.getGeneAddresses();
         Integer[] sizes = sig.getValueCodeSizes();
         for (int i = 0; i < adrs.length; i++) {
-//            int startAddr = adrs[i];
-//            boolean on = addressable.get(startAddr);
-//            Operator op = addressable.get(startAddr + 1) ? OpFactory.eq() : OpFactory.neq();
-//            int val = decode(startAddr + 2, sizes[i]);
-//            sels.add(new Selector(on, op, val));
             sels.add(decodeSelector(addressable, i));
         }
         return sels;
     }
-//    private List<Selector> createSelectors() {
-//        List<Selector> sels = new ArrayList<Selector>();
-//        for (int i = 0; i < sig.getGeneAddresses().length; i++) {
-//            sels.add(decodeSelector(addressable, i));
-//        }
-//        return sels;
-//    }
 
     public Selector decodeSelector(Addressable toDecode, int selId) {
         int i = sig.getGeneAddresses()[selId];

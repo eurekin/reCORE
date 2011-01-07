@@ -26,10 +26,11 @@ public class Mapper {
     String clazzName;
     Map<Integer, String> classmap;
 
-    public Mapper(Map<Integer, Map<Integer, String>> valmap,
+     public Mapper(Map<Integer, Map<Integer, String>> valmap,
             Map<Integer, String> namemap) {
         this.valmap = valmap;
         this.namemap = namemap;
+        getRidOfClassAttributeFromListOfRegularAttributes();
     }
 
     public String nameOf(int attr) {
