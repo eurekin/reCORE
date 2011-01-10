@@ -115,6 +115,7 @@ public class CoPopulations {
                 max = ruleSetStats.getMax();
                 System.out.println("Congratulations!");
                 java.awt.Toolkit.getDefaultToolkit().beep();
+                outer:
                 for (PittsIndividual ind : ruleSets().getIndividuals()) {
                     final double eval = ind.fitness();
                     if (eval == max) {
@@ -131,6 +132,8 @@ public class CoPopulations {
                         System.out.println(HORSPC);
                         plotter.detailedPlots(ruleSet);
                         System.out.println(HORSPC);
+
+                        break outer;
 
                     }
                 }

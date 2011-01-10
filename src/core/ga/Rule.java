@@ -1,17 +1,18 @@
 package core.ga;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Rekin
  */
-public class Rule {
+public class Rule implements Serializable {
 
     List<Selector> sels;
     List<Selector> rsels;
     int clazz;
-    private Individual individual;
+    private transient Individual individual;
 
     public Rule(List<Selector> sels, int clazzId) {
         this.sels = sels;

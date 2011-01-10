@@ -1,13 +1,14 @@
 package core.copop;
 
 import core.ga.Rule;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Rekin
  */
-public class RuleSet {
+public class RuleSet implements Serializable {
 
     List<Rule> rules;
     int defaultClass;
