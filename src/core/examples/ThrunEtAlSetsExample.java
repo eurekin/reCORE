@@ -24,7 +24,7 @@ public class ThrunEtAlSetsExample {
     }
 
     private static void p3() {
-        simplePlot(getPlot(sig, new Plotable() {
+        simpleBinaryPlot(getPlot(sig, new Plotable() {
 
             public String call(List<Integer> comb) {
                 return m3(comb);
@@ -33,7 +33,7 @@ public class ThrunEtAlSetsExample {
     }
 
     private static void p2() {
-        simplePlot(getPlot(sig, new Plotable() {
+        simpleBinaryPlot(getPlot(sig, new Plotable() {
 
             public String call(List<Integer> comb) {
                 return m2(comb);
@@ -42,7 +42,7 @@ public class ThrunEtAlSetsExample {
     }
 
     private static void p1() {
-        simplePlot(getPlot(sig, new Plotable() {
+        simpleBinaryPlot(getPlot(sig, new Plotable() {
 
             public String call(List<Integer> comb) {
                 return m1(comb);
@@ -54,22 +54,22 @@ public class ThrunEtAlSetsExample {
         // head_shape = body_shape
         if (comb.get(0).equals(comb.get(1))) return "#";
         // jacket_color is red
-        if (comb.get(4) == 1) return "#";
+        if (comb.get(4) == 0) return "#";
         return " ";
     }
 
     private static String m2(List<Integer> comb) {
         int attrs = 0;
         // exactly 2 of the attributes have their first value
-        for (Integer attr : comb) attrs += attr == 1 ? 1 : 0;
+        for (Integer attr : comb) attrs += attr == 0 ? 1 : 0;
         return attrs == 2 ? "#" : " ";
     }
 
     private static String m3(List<Integer> comb) {
         // jacket_color is green and holding a sword
-        if (comb.get(4) == 3 && comb.get(3) == 1) return "#";
+        if (comb.get(4) == 2 && comb.get(3) == 0) return "#";
         // jacket color is not blue and body shape is octagon
-        if (comb.get(4) != 4 && comb.get(1) != 3) return "#";
+        if (comb.get(4) != 3 && comb.get(1) != 2) return "#";
         return " ";
     }
 }

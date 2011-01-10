@@ -79,7 +79,7 @@ public class CoordCalc {
         ListIterator<Integer> muls = mull.listIterator();
         int dim = 0;
         while (half.nextIndex() < end) {
-            dim += muls.next() * (half.next() - 1); // vals start at 1 for MONK
+            dim += muls.next() * (half.next()); // vals start at 1 for MONK
         }
         return dim;
     }
@@ -101,7 +101,7 @@ public class CoordCalc {
     private List<Integer> rev(int x, List<Integer> muls) {
         List<Integer> res = new ArrayList<Integer>();
         for (Integer d : muls) {
-            res.add(x / d + 1);
+            res.add(x / d);
             x %= d;
         }
         return res;
@@ -137,7 +137,6 @@ public class CoordCalc {
             throw new UnsupportedOperationException();
         }
     }
-
 
     public String spillGuts() {
         StringBuilder sb = new StringBuilder();

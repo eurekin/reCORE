@@ -19,10 +19,20 @@ public class RuleSet {
 
     public int apply(List args) {
         for (Rule rule : rules) {
-            if (!rule.apply(args)) continue;
+            if (!rule.apply(args))
+                continue;
             return rule.getClazz();
         }
         return defaultClass;
+    }
+    public int determineRuleNo(List args) {
+        int i = 0;
+        for (Rule rule : rules) {
+            if (rule.apply(args))
+                return i;
+            i++;
+        }
+        return -1;
     }
 
     public int getDefaultClass() {
@@ -32,5 +42,4 @@ public class RuleSet {
     public List<Rule> getRules() {
         return rules;
     }
-
 }

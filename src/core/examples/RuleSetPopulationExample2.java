@@ -72,9 +72,9 @@ public class RuleSetPopulationExample2 {
                             ruleSet = ind.getRS();
                             System.out.println(bundle.getPrinter().print(ruleSet));
                             System.out.println(ind.getCm().getWeighted());
-                            String[][] plot = bundle.getPlotter().plotRuleSet(ruleSet);
+                            String[][] plot = bundle.getPlotter().plotBinaryRuleSet(ruleSet);
                             System.out.println("Visualization: ");
-                            RuleASCIIPlotter.simplePlot(plot);
+                            RuleASCIIPlotter.simpleBinaryPlot(plot);
                         }
                     }
                 }

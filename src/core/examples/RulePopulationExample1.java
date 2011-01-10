@@ -51,7 +51,7 @@ public class RulePopulationExample1 {
                     out.println("measures = " + ind.cm());
                     out.print("rule:      ");
                     out.println(ds.getPrinter().prettyPrint(ind.rule()));
-                    simplePlot(ds.getPlotter().plotRule(ind.rule()));
+                    simpleBinaryPlot(ds.getPlotter().plotRule(ind.rule()));
                 }
                 out.flush();
             }

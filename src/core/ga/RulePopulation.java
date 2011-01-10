@@ -6,8 +6,14 @@ import core.stat.SimpleStatistics;
 import core.token.TokenCompetition;
 import core.token.TokenizingEvaluator;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -21,6 +27,7 @@ public class RulePopulation implements Iterable<Individual> {
     final ExecutionContext context;
     private List<Individual> next;
     private boolean tokenCompetition = true;
+    private int toSkip;
 
     public RulePopulation(ExecutionContext ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
@@ -63,6 +70,28 @@ public class RulePopulation implements Iterable<Individual> {
             normalEvaluate();
     }
 
+    private void addIndividualToTemporaryPopulationAndUpdateIndex(int r) {
+        int currentIndex = next.size(); // since we're filling it up
+        addToIndexMap(r, currentIndex);
+        Individual copy = individuals.get(r).copy();
+        next.add(copy);
+    }
+
+    private void addToIndexMap(int oldId, int newId) {
+        Set<Integer> set;
+        if (oldIndexesToNew.containsKey(oldId)) {
+            set = oldIndexesToNew.get(oldId);
+        } else {
+            set = new HashSet<Integer>();
+            oldIndexesToNew.put(oldId, set);
+        }
+        set.add(newId);
+    }
+
+    private void switchPopulations() {
+        individuals = next;
+    }
+
     private void tokenCompetitionUpdate() {
         TokenCompetition comp = new TokenCompetition(context.data().size());
         TokenizingEvaluator evaluator = new TokenizingEvaluator(comp);
@@ -85,7 +114,13 @@ public class RulePopulation implements Iterable<Individual> {
 
     public void mutate() {
         final double mt = context.getMt();
+        int save = toSkip;
         for (Individual i : individuals) {
+            if (save > 0) {
+                save--;
+                continue;
+            }
+
             i.mutate(mt);
         }
 
@@ -94,9 +129,16 @@ public class RulePopulation implements Iterable<Individual> {
     public List<Individual> getIndividuals() {
         return individuals;
     }
+    Map<Integer, Set<Integer>> oldIndexesToNew =
+            new HashMap<Integer, Set<Integer>>();
 
     private void select() {
         next = new ArrayList<Individual>(individuals.size());
+
+        // index updates
+        oldIndexesToNew.clear();
+        saveTheRulesWhichAreNeededByRulePopulationsElitism();
+        // random one
         TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
         double CDF[] = new double[individuals.size()];
         double acc = 0;
@@ -110,12 +152,12 @@ public class RulePopulation implements Iterable<Individual> {
         }
         for (int i = 0; i < CDF.length; i++)
             m.put(CDF[i], i);
-        for (int i = 0; i < individuals.size(); i++) {
+        while (next.size() < individuals.size()) {
             int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
-            Individual copy = individuals.get(r).copy();
-            next.add(copy);
+            addIndividualToTemporaryPopulationAndUpdateIndex(r);
         }
-        individuals = next;
+        switchPopulations();
+        //debugOutput();
     }
 
     public SimpleStatistics stats() {
@@ -125,5 +167,51 @@ public class RulePopulation implements Iterable<Individual> {
             ss.addValue(fevl.eval(i.cm()));
         }
         return ss;
+    }
+
+    public List<Integer> getNewIndexesFor(Integer integer) {
+        // TODO: construct a map of candidates for each
+        Set<Integer> get = oldIndexesToNew.get(integer);
+        if (get == null)
+            return Collections.singletonList(integer);
+        else
+            return new ArrayList<Integer>(get);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(1.0d / 7.0d + 6.0d / 7.0d);
+    }
+
+    private void debugOutput() {
+        System.out.print("[");
+        for (Integer integer : oldIndexesToNew.keySet()) {
+            System.out.println(integer + " => " + oldIndexesToNew.get(integer).size() + ", ");
+        }
+        System.out.println("]");
+
+    }
+
+    public Individual getBest() {
+        Individual b = individuals.get(0);
+        for (Individual individual : individuals) {
+            if (b.fitness() < individual.fitness())
+                b = individual;
+        }
+        return b;
+    }
+
+    public void pleaseSaveThisRulesForMe(Set<Integer> indexesToSave) {
+        this.indexesToSave = indexesToSave;
+    }
+    Set<Integer> indexesToSave;
+
+    private void saveTheRulesWhichAreNeededByRulePopulationsElitism() {
+        if (indexesToSave == null)
+            return;
+        toSkip = indexesToSave.size();
+        for (Integer i : indexesToSave) {
+            addIndividualToTemporaryPopulationAndUpdateIndex(i);
+        }
+        indexesToSave = null;
     }
 }

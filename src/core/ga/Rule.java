@@ -20,6 +20,7 @@ public class Rule {
 
     public boolean apply(List args) {
         for (int i = 0; i < args.size(); i++) {
+            if(sels.size()!=args.size()) throw new RuntimeException("Rule args != no of sels");
             Selector sel = sels.get(i);
             if (!sel.on) continue;
             boolean result = sel.op.apply(sel.val, (Integer) (args.get(i)));

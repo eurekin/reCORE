@@ -16,7 +16,6 @@ public class RulePrinter {
     }
 
     public String print(RuleSet rs) {
-
         StringBuilder sb = new StringBuilder();
         for (Rule rule : rs.getRules()) {
             sb.append(prettyPrint(rule)).append("\n");

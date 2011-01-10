@@ -2,7 +2,6 @@ package core.ga;
 
 import core.BinaryChromosome;
 import core.ga.ops.ec.FitnessEval;
-import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.BinaryConfMtx;
@@ -134,9 +133,9 @@ public class Individual implements Mutable {
     }
 
     public void penalizeToken() {
-//        System.out.printf("Penalizing fit=%.3f tok=%d ter=%d", fitness, tokens, territory);
+        //        System.out.printf("Penalizing fit=%.3f tok=%d ter=%d", fitness, tokens, territory);
         fitness *= (double) (tokens+1) / (double) territory;
-//        System.out.printf(" newfit=%.3f\n", fitness);
+        //        System.out.printf(" newfit=%.3f\n", fitness);
     }
 
     public double fitness() {

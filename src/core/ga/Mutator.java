@@ -22,15 +22,15 @@ public class Mutator {
     public void mutate(Mutable mutable, double mt) {
         if (mutable.size() == 0)
             return;
-        if (mutable.size() > 5)
-            binomialMutateRepeat(mutable, mt);
-        else
+//        if (mutable.size() > 5)
+//            binomialMutateRepeat(mutable, mt);
+//        else
             mutateInter(mutable, mt);
     }
 
     public void mutateInter(Mutable mutable, double mt) {
         for (int i = 0; i < mutable.size(); i++)
-            if (rand.nextDouble() <= mt)
+            if (rand.nextDouble() < mt)
                 mutable.mutateAt(i);
     }
 

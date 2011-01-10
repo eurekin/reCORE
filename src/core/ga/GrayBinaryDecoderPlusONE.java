@@ -12,10 +12,9 @@ public class GrayBinaryDecoderPlusONE implements BinaryDecoder {
         for (int i = start + 1, end = start + n; i < end; i++) {
             d <<= 1;
             bit = code.get(i) ^ bit;
-            if (bit) {
+            if (bit)
                 d++;
-            }
         }
-        return d  + 1;
+        return d ; // FIXMEEEEE TODO XXX
     }
 }

@@ -108,7 +108,7 @@ public class PittsIndividual implements Mutable {
 //                public int compare(Rule o1, Rule o2) {
 //                    BinaryConfMtx cm1 = o1.individual().cm();
 //                    BinaryConfMtx cm2 = o2.individual().cm();
-//                    return -Double.compare(cm1.fn+cm1.fp, cm2.fn + cm2.fp);
+//                    return Double.compare(cm1.fn+cm1.fp, cm2.fn + cm2.fp);
 //                }
 //            });
             ruleSet = new RuleSet(rs, clazz);
@@ -117,7 +117,7 @@ public class PittsIndividual implements Mutable {
     }
 
     public void addOrRemoveWith(double prob) {
-        if (rand.nextDouble() < prob)
+        if (rand.nextDouble() > prob)
             return;
         if (indexes.isEmpty()) {
             addInt();
@@ -153,7 +153,7 @@ public class PittsIndividual implements Mutable {
     }
 
     public void mutateClass(double mprob) {
-        if (rand.nextDouble() <= mprob)
+        if (rand.nextDouble() < mprob)
             clazz = rand.nextInt(clazzMax);
     }
 
@@ -184,5 +184,33 @@ public class PittsIndividual implements Mutable {
 
     public double fitness() {
         return ctx.fitnessEvaluator().eval(getCm().getWeighted());
+    }
+
+    public void updateIndexes() {
+        for (int i = 0; i < list.size(); i++) {
+            List<Integer> candidates = rpop.getNewIndexesFor(list.get(i));
+            Integer newI = chooseOneRandomlyFrom(candidates);
+
+            if (!indexes.contains(newI))
+                list.set(i, newI);
+        }
+        int oldsize = indexes.size();
+
+        indexes.clear();
+        indexes.addAll(list);
+
+        // check invariants
+        if (indexes.size() != oldsize) {
+            throw new RuntimeException(
+                    "Possible PittsIndividual corruption: "
+                    + " oldSize=" + oldsize
+                    + ", newSize=" + indexes.size()
+                    + ", listSize=" + list.size());
+        }
+
+    }
+
+    private Integer chooseOneRandomlyFrom(List<Integer> candidates) {
+        return candidates.get(rand.nextInt(candidates.size()));
     }
 }

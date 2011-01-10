@@ -35,11 +35,11 @@ public class RuleASCIIPlotter {
         for (List<Integer> comb : c.allCombinations()) {
             String s = " ";
             // jacket_color is green and holding a sword
-            if (comb.get(4) == 3 && comb.get(3) == 1) {
+            if (comb.get(4) == 2 && comb.get(3) == 0) {
                 s = "#";
             }
-            // jacket color is not blue and body shape is octagon
-            if (comb.get(4) != 4 && comb.get(1) != 3) {
+            // jacket color is not blue and body shape is not octagon
+            if (comb.get(4) != 3 && comb.get(1) != 2) {
                 s = "#";
             }
             datavis[c.getY(comb)][c.getX(comb)] = s;
@@ -58,7 +58,7 @@ public class RuleASCIIPlotter {
         return datavis;
     }
 
-    public static void simplePlot(String[][] datavis) {
+    public static void simpleBinaryPlot(String[][] datavis) {
         for (int i = 0; i < datavis.length; i++) {
             String[] strings = datavis[i];
             for (int j = 0; j < strings.length; j++) {
@@ -69,14 +69,64 @@ public class RuleASCIIPlotter {
         }
     }
 
-    public String[][] plotRuleSet(RuleSet rs) {
+    public String[][] plotBinaryRuleSet(RuleSet rs) {
         String[][] datavis = initEmptyDataVis(c);
         for (List<Integer> comb : c.allCombinations()) {
             int ok = rs.apply(comb);
-            String s = ok ==0 ? " " : "#";
+            String s = ok == 0 ? " " : "#";
             datavis[c.getY(comb)][c.getX(comb)] = s;
         }
         return datavis;
+    }
+
+    public void plotPlots(String[][]... plots) {
+        String PLOT_DELIMETER = "|";
+        for (int i = 0; i < plots[0].length; i++) {
+            System.out.print(PLOT_DELIMETER);
+            for (String[][] stringses : plots) {
+                String line[] = stringses[i];
+                for (String string : line) {
+                    System.out.print(string);
+                }
+                System.out.print(PLOT_DELIMETER);
+            }
+            System.out.println("");
+        }
+    }
+
+    public String[][] plotRules(RuleSet rs) {
+        String[][] vis = initEmptyDataVis(c);
+        for (List<Integer> comb : c.allCombinations()) {
+            int ok = rs.determineRuleNo(comb);
+            String toString = new Integer(ok).toString();
+            toString = toString.equals("-1") ? " " : toString;
+            vis[c.getY(comb)][c.getX(comb)] = toString;
+        }
+        return vis;
+    }
+
+    public String[][] plotClasses(RuleSet rs) {
+        String[][] vis = initEmptyDataVis(c);
+        for (List<Integer> comb : c.allCombinations()) {
+            int ok = rs.apply(comb);
+            String toString = new Integer(ok).toString();
+            toString = toString.equals("0") ? " " : toString;
+            vis[c.getY(comb)][c.getX(comb)] = toString;
+        }
+        return vis;
+    }
+
+    public void printOutClassPlot(RuleSet rs) {
+        String[][] vis = initEmptyDataVis(c);
+        for (List<Integer> comb : c.allCombinations()) {
+            int ok = rs.apply(comb);
+            vis[c.getY(comb)][c.getX(comb)] = new Integer(ok).toString();
+        }
+        for (String[] strings : vis) {
+            for (String string : strings)
+                System.out.print(string);
+            System.out.println();
+        }
     }
 
     public static String[][] getPlot(RuleChromosomeSignature sig, Plotable callable) {
@@ -90,5 +140,12 @@ public class RuleASCIIPlotter {
         for (List<Integer> comb : c.allCombinations())
             datavis[c.getY(comb)][c.getX(comb)] = callable.call(comb);
         return datavis;
+    }
+
+    public void detailedPlots(RuleSet ruleSet) {
+        plotPlots(
+                plotBinaryRuleSet(ruleSet),
+                plotClasses(ruleSet),
+                plotRules(ruleSet));
     }
 }
