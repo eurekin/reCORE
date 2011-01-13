@@ -6,7 +6,7 @@ import core.ga.Mutable;
 import core.ga.Mutator;
 import core.ga.Rule;
 import core.ga.RulePopulation;
-import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
 import core.stat.BinaryConfMtx;
@@ -41,9 +41,9 @@ public class PittsIndividual implements Mutable {
     private int clazz;
     private RuleSet ruleSet;
     private ConfMtx cm;
-    private ExecutionContext ctx;
+    private ExecutionEnv ctx;
 
-    PittsIndividual(ExecutionContext ctx, RulePopulation rpop) {
+    PittsIndividual(ExecutionEnv ctx, RulePopulation rpop) {
         this(ctx.rand(), ctx.maxRuleSetLength(), ctx.signature().getClassDomain().size(), rpop);
         this.ctx = ctx;
     }

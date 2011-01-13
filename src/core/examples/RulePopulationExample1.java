@@ -6,7 +6,7 @@ import java.util.Scanner;
 import core.ga.Individual;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.FitnessEval;
-import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.DataSetBundle;
 import core.DataSetBundleFactory;
@@ -27,7 +27,7 @@ public class RulePopulationExample1 {
         boolean train = chooseTrain();
         FitnessEval fite = chooseFitnessEvaluator();
 
-        ExecutionContext ctx = ExecutionContextFactory.MONK(setno, train, 100, fite);
+        ExecutionEnv ctx = ExecutionContextFactory.MONK(setno, train, 100, fite);
         DataSetBundle ds = DataSetBundleFactory.MONK(setno, train);
 
         out.println("Trying to find best rule for: " + ds.getCreationArgs());

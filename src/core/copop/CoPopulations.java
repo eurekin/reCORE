@@ -2,7 +2,7 @@ package core.copop;
 
 import core.ga.Individual;
 import core.ga.RulePopulation;
-import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;
 import core.vis.RuleASCIIPlotter;
 
@@ -16,9 +16,9 @@ public class CoPopulations {
     private RuleSetPopulation rsp;
     private boolean debug = false;
     private int i;
-    private final ExecutionContext ec;
+    private final ExecutionEnv ec;
 
-    public CoPopulations(int populationSize, ExecutionContext ec) {
+    public CoPopulations(int populationSize, ExecutionEnv ec) {
         rp = new RulePopulation(ec);
         rsp = new RuleSetPopulation(populationSize, ec, rp);
         this.ec = ec;

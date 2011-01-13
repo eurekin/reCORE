@@ -47,9 +47,9 @@ import core.io.repr.col.DomainMemoizable;
 public class RuleChromosomeSignature {
 
     Set classDomain;
+    Integer clazzAddress;
     List<Set> attrDomain;
     Integer[] geneAddresses;
-    Integer clazzAddress;
     Integer[] valueCodeSizes;
     final int relCodeSize = 1;
     final int switchCodeSize = 1;

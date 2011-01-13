@@ -3,7 +3,7 @@ package core.examples;
 import core.ExecutionContextFactory;
 import core.ga.Individual;
 import core.ga.Mutator;
-import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
 import java.util.Random;
 
@@ -21,7 +21,7 @@ public class IndividualExample {
 
     public static void testCorrectness() {
         int times = 100;
-        ExecutionContext c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
+        ExecutionEnv c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
         Individual r = new Individual(c.signature(), c.rand(), c.decoder(), new Mutator(new Random()), FitnessEvaluatorFactory.EVAL_FMEASURE);
         for (int i = 0; i < times; i++) {
             System.out.println(r.chromosome());
@@ -35,7 +35,7 @@ public class IndividualExample {
         int tests = 100000;
         int reps = 5;
 
-        ExecutionContext c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
+        ExecutionEnv c = ExecutionContextFactory.MONK(3, true, 100, FitnessEvaluatorFactory.EVAL_FMEASURE);
         for (int j = 0; j < reps; j++) {
             Individual r = new Individual(c.signature(), c.rand(), c.decoder(), new Mutator(new Random()), FitnessEvaluatorFactory.EVAL_FMEASURE);
             long start = System.currentTimeMillis();

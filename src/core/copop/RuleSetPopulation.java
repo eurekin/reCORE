@@ -1,7 +1,7 @@
 package core.copop;
 
 import core.ga.RulePopulation;
-import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
 import core.stat.SimpleStatistics;
 import java.util.ArrayList;
@@ -19,11 +19,11 @@ import java.util.TreeMap;
 public class RuleSetPopulation {
 
     private List<PittsIndividual> individuals;
-    private ExecutionContext context;
+    private ExecutionEnv context;
     private PittsIndividual best;
     private RulePopulation rpop;
 
-    public RuleSetPopulation(int popsize, ExecutionContext ctx, RulePopulation rpop) {
+    public RuleSetPopulation(int popsize, ExecutionEnv ctx, RulePopulation rpop) {
         this.context = ctx;
         individuals = new ArrayList<PittsIndividual>();
         this.rpop = rpop;

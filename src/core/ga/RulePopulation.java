@@ -1,6 +1,6 @@
 package core.ga;
 
-import core.ga.ops.ec.ExecutionContext;
+import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
 import core.stat.SimpleStatistics;
 import core.token.TokenCompetition;
@@ -24,14 +24,15 @@ import java.util.TreeMap;
 public class RulePopulation implements Iterable<Individual> {
 
     List<Individual> individuals;
-    final ExecutionContext context;
+    final ExecutionEnv context;
     private List<Individual> next;
     private boolean tokenCompetition = true;
     private int toSkip;
 
-    public RulePopulation(ExecutionContext ctx) {
+    public RulePopulation(ExecutionEnv ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
         Individual ind;
+        tokenCompetition = ctx.isTokenCompetitionEnabled();
         Mutator mutator = new Mutator(ctx.rand());
         for (int i = 0; i < ctx.size(); i++) {
             ind = new Individual(ctx.signature(), ctx.rand(),
