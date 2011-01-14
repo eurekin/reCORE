@@ -1,6 +1,5 @@
 package core.copop;
 
-import core.ga.Individual;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;
@@ -33,23 +32,20 @@ public class CoPopulations {
         rsp.evaluate();
     }
 
-    private void updateIndexesToHoldThisWholeJunkTogether() {
-        for (PittsIndividual rs : rsp.getIndividuals()) {
-            rs.updateIndexes();
-        }
-    }
-
     public void evolve() {
-        rp.evolve();
+//        System.out.println("* Rule evolve");
+        rp.select(); // buduje też indeks do zaktualizowania reguł
+        rp.mutate(); // zachowuje elitarność
+        rp.decode();  // bezwzględnie aktualizuje (dekoduje) regułę
+        rp.repair();  // reguła naprawia samą siebie, jeśli naruszono sygnaturę
+        rp.evaluate(); // aktualizacja macierzy pomyłek - uaktualnienie oceny
 
-        rp.decode();
-        rp.repair();
-        rp.evaluate();
-
-        rsp.evolve();
-        updateIndexesToHoldThisWholeJunkTogether();
-        rsp.evaluate();
-        rsp.select();
+//        System.out.println("* Sets evolve");
+        rsp.reset();
+        rsp.evaluate(); // tworzenie wieloklasowej oraz ważonej mac. pom.
+        rsp.select();  // selekcja elitarna
+        rsp.updateIndexes(); // naprawia wskaźniki do reguł
+        rsp.evolve();  // reset (ruleSet=null;) oraz mutacja (uwzgl. elitarność)
         updateBest();
 
         // do raports and stuff

@@ -22,7 +22,8 @@ public class RulePopulationExample2 {
         rp.evaluate();
 
         for (int i = 0; i < 1000; i++) {
-            rp.evolve();
+            rp.select();
+            rp.mutate();
 
             rp.decode();
             rp.repair();

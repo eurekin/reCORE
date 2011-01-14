@@ -22,11 +22,13 @@ public class RuleSetPopulation {
     private ExecutionEnv context;
     private PittsIndividual best;
     private RulePopulation rpop;
+    private int eliteSelectionSize;
 
     public RuleSetPopulation(int popsize, ExecutionEnv ctx, RulePopulation rpop) {
         this.context = ctx;
         individuals = new ArrayList<PittsIndividual>();
         this.rpop = rpop;
+        this.eliteSelectionSize = ctx.getEliteSelectionSize();
         for (int i = 0; i < popsize; i++) {
             individuals.add(new PittsIndividual(ctx, rpop));
         }
@@ -38,21 +40,27 @@ public class RuleSetPopulation {
         for (PittsIndividual i : individuals) {
             if (toPass > 0) {
                 toPass--;
-                continue;
+            } else {
+                i.addOrRemoveWith(mprob);
+                i.mutateClass(mprob);
+                i.mutate(mprob);
             }
-            i.addOrRemoveWith(mprob);
-            i.mutateClass(mprob);
-            i.mutate(mprob);
         }
     }
 
     public void evolve() {
-        reset();
         mutate();
     }
 
+    public void updateIndexes() {
+//        System.out.println("Updating indexes");
+        for (PittsIndividual rs : getIndividuals()) {
+            rs.updateIndexes();
+        }
+    }
+
     public int eliteSelectionSize() {
-        return 50;
+        return eliteSelectionSize;
     }
 
     public void select() {
@@ -67,9 +75,13 @@ public class RuleSetPopulation {
         Set<Integer> indexesToSave = new HashSet<Integer>();
         for (int i = 0, end = eliteSelectionSize(); i < end; i++) {
             final PittsIndividual ind = individuals.get(i);
-            next.add(ind);
+            next.add(ind.copy());
+//            System.out.println("This one (" + i + ")is being saved: >>");
+//            System.out.println(context.getBundle().getPrinter().print(ind.getRS()));
+//            System.out.println(ind + "<<");
             indexesToSave.addAll(ind.indexes);
         }
+        //System.out.println("Please save me: " + indexesToSave);
         rpop.pleaseSaveThisRulesForMe(indexesToSave);
 
         TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();

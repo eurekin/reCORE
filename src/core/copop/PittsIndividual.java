@@ -73,12 +73,12 @@ public class PittsIndividual implements Mutable {
         copy.maxLength = maxLength;
         copy.mutator = mutator;
         copy.ruleNo = ruleNo;
-        copy.list = list;
-        copy.indexes = indexes;
         copy.clazz = clazz;
         copy.ruleSet = ruleSet;
         copy.cm = cm;
         copy.ctx = ctx;
+        copy.list = new ArrayList<Integer>(list);
+        copy.indexes = new HashSet<Integer>(indexes);
         return copy;
     }
 
@@ -103,18 +103,26 @@ public class PittsIndividual implements Mutable {
             for (Integer i : list) {
                 rs.add(inds.get(i).rule());
             }
-//            Collections.sort(rs, new Comparator<Rule>() {
-//
-//                public int compare(Rule o1, Rule o2) {
-//                    BinaryConfMtx cm1 = o1.individual().cm();
-//                    BinaryConfMtx cm2 = o2.individual().cm();
-//                    return Double.compare(cm1.fn+cm1.fp, cm2.fn + cm2.fp);
-//                }
-//            });
+            sortRules(rs);
             ruleSet = new RuleSet(rs, clazz);
         }
         return ruleSet;
     }
+
+    private void sortRules(List<Rule> rs) {
+        if (!ctx.isRuleSortingEnabled())
+            return;
+
+        Collections.sort(rs, ruleComparator);
+    }
+    final static Comparator<Rule> ruleComparator = new Comparator<Rule>() {
+
+        public int compare(Rule o1, Rule o2) {
+            BinaryConfMtx cm1 = o1.individual().cm();
+            BinaryConfMtx cm2 = o2.individual().cm();
+            return Double.compare(cm1.fn + cm1.fp, cm2.fn + cm2.fp);
+        }
+    };
 
     public void addOrRemoveWith(double prob) {
         if (rand.nextDouble() > prob)
@@ -187,12 +195,12 @@ public class PittsIndividual implements Mutable {
     }
 
     public void updateIndexes() {
+//        System.out.println("Before: " + toString());
         for (int i = 0; i < list.size(); i++) {
-            List<Integer> candidates = rpop.getNewIndexesFor(list.get(i));
-            Integer newI = chooseOneRandomlyFrom(candidates);
-
-            if (!indexes.contains(newI))
-                list.set(i, newI);
+            Integer candidate = rpop.getNewIndexesFor(list.get(i));
+            //System.out.println("candidate = " + candidate);
+            if (!indexes.contains(candidate))
+                list.set(i, candidate);
         }
         int oldsize = indexes.size();
 
@@ -207,10 +215,7 @@ public class PittsIndividual implements Mutable {
                     + ", newSize=" + indexes.size()
                     + ", listSize=" + list.size());
         }
+//        System.out.println("After: " + toString());
 
-    }
-
-    private Integer chooseOneRandomlyFrom(List<Integer> candidates) {
-        return candidates.get(rand.nextInt(candidates.size()));
     }
 }

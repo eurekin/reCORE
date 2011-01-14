@@ -97,7 +97,6 @@ public class ExecutionEnv {
     public void setBundle(DataSetBundle bundle) {
         this.bundle = bundle;
     }
-
     private boolean tokenCompetitionEnabled = true;
 
     public boolean isTokenCompetitionEnabled() {
@@ -106,5 +105,24 @@ public class ExecutionEnv {
 
     public void setTokenCompetitionEnabled(boolean tokenCompetitionEnabled) {
         this.tokenCompetitionEnabled = tokenCompetitionEnabled;
+    }
+    private int eliteSelectionSize;
+
+    public int getEliteSelectionSize() {
+        return eliteSelectionSize;
+    }
+
+    public void setEliteSelectionSize(int eliteSelectionSize) {
+        this.eliteSelectionSize = eliteSelectionSize;
+    }
+
+    boolean ruleSortingEnabled = false;
+
+    public boolean isRuleSortingEnabled() {
+        return ruleSortingEnabled;
+    }
+
+    public void setRuleSortingEnabled(boolean ruleSortingEnabled) {
+        this.ruleSortingEnabled = ruleSortingEnabled;
     }
 }

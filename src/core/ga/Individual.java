@@ -134,7 +134,7 @@ public class Individual implements Mutable {
 
     public void penalizeToken() {
         //        System.out.printf("Penalizing fit=%.3f tok=%d ter=%d", fitness, tokens, territory);
-        fitness *= (double) (tokens+1) / (double) territory;
+        fitness *= (double) (tokens) / (double) territory;
         //        System.out.printf(" newfit=%.3f\n", fitness);
     }
 

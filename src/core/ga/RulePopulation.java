@@ -42,10 +42,6 @@ public class RulePopulation implements Iterable<Individual> {
         this.context = ctx;
     }
 
-    public void evolve() {
-        select();
-        mutate();
-    }
 
     public void randomize() {
         for (Individual ind : individuals)
@@ -79,14 +75,25 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     private void addToIndexMap(int oldId, int newId) {
-        Set<Integer> set;
+//        System.out.println("Add index to map called with " + oldId + " => " + newId);
         if (oldIndexesToNew.containsKey(oldId)) {
-            set = oldIndexesToNew.get(oldId);
+            return;
+            // brutal, but required
+            // if the mapping can result in more than one substitution,
+            // than it would lead to an explosion - no rules could be
+            // recombined, since we would have to be sure we're not
+            // destroying the elite rulesets.
+            // Tracking selected rules would require a lot more sophisticated
+            // mechanism and very intricate rule <-> ruleset interaction
+            // during update phase.
+            // So... NO to 1-N mapping.
+            // And it will run faster also.
+
+            //set = oldIndexesToNew.get(oldId);
         } else {
-            set = new HashSet<Integer>();
-            oldIndexesToNew.put(oldId, set);
+            oldIndexesToNew.put(oldId, newId);
         }
-        set.add(newId);
+//        System.out.println("New Map = " + oldIndexesToNew);
     }
 
     private void switchPopulations() {
@@ -115,25 +122,22 @@ public class RulePopulation implements Iterable<Individual> {
 
     public void mutate() {
         final double mt = context.getMt();
-        int save = toSkip;
-        for (Individual i : individuals) {
-            if (save > 0) {
-                save--;
+        Collection<Integer> values = oldIndexesToNew.values();
+        for (Integer i = 0; i < individuals.size(); i++) {
+            if (values.contains(i))
                 continue;
-            }
+            individuals.get(i).mutate(mt);
 
-            i.mutate(mt);
         }
-
     }
 
     public List<Individual> getIndividuals() {
         return individuals;
     }
-    Map<Integer, Set<Integer>> oldIndexesToNew =
-            new HashMap<Integer, Set<Integer>>();
+    Map<Integer, Integer> oldIndexesToNew =
+            new HashMap<Integer, Integer>();
 
-    private void select() {
+    public void select() {
         next = new ArrayList<Individual>(individuals.size());
 
         // index updates
@@ -158,7 +162,8 @@ public class RulePopulation implements Iterable<Individual> {
             addIndividualToTemporaryPopulationAndUpdateIndex(r);
         }
         switchPopulations();
-        //debugOutput();
+
+//        debugOutput();
     }
 
     public SimpleStatistics stats() {
@@ -170,26 +175,16 @@ public class RulePopulation implements Iterable<Individual> {
         return ss;
     }
 
-    public List<Integer> getNewIndexesFor(Integer integer) {
+    public Integer getNewIndexesFor(Integer integer) {
         // TODO: construct a map of candidates for each
-        Set<Integer> get = oldIndexesToNew.get(integer);
-        if (get == null)
-            return Collections.singletonList(integer);
+        if (oldIndexesToNew.containsKey(integer))
+            return oldIndexesToNew.get(integer);
         else
-            return new ArrayList<Integer>(get);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(1.0d / 7.0d + 6.0d / 7.0d);
+            return integer;
     }
 
     private void debugOutput() {
-        System.out.print("[");
-        for (Integer integer : oldIndexesToNew.keySet()) {
-            System.out.println(integer + " => " + oldIndexesToNew.get(integer).size() + ", ");
-        }
-        System.out.println("]");
-
+        System.out.println(oldIndexesToNew);
     }
 
     public Individual getBest() {
@@ -207,10 +202,12 @@ public class RulePopulation implements Iterable<Individual> {
     Set<Integer> indexesToSave;
 
     private void saveTheRulesWhichAreNeededByRulePopulationsElitism() {
+//        System.out.println("Going to save rules no: " + indexesToSave);
         if (indexesToSave == null)
             return;
         toSkip = indexesToSave.size();
         for (Integer i : indexesToSave) {
+
             addIndividualToTemporaryPopulationAndUpdateIndex(i);
         }
         indexesToSave = null;
