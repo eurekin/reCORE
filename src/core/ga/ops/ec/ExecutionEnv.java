@@ -31,6 +31,10 @@ public class ExecutionEnv {
         this.fitnessEvaluator = ruleFitEval;
     }
 
+    public void setRand(Random rand) {
+        this.rand = rand;
+    }
+
     public FitnessEval fitnessEvaluator() {
         return fitnessEvaluator;
     }
@@ -125,4 +129,15 @@ public class ExecutionEnv {
     public void setRuleSortingEnabled(boolean ruleSortingEnabled) {
         this.ruleSortingEnabled = ruleSortingEnabled;
     }
+
+    DebugOptions debugOptions = new DebugOptions();
+
+    public DebugOptions getDebugOptions() {
+        return debugOptions;
+    }
+
+    public void setDebugOptions(DebugOptions debugOptions) {
+        this.debugOptions = debugOptions;
+    }
+
 }

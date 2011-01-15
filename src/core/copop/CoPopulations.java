@@ -33,22 +33,20 @@ public class CoPopulations {
     }
 
     public void evolve() {
-//        System.out.println("* Rule evolve");
         rp.select(); // buduje też indeks do zaktualizowania reguł
         rp.mutate(); // zachowuje elitarność
         rp.decode();  // bezwzględnie aktualizuje (dekoduje) regułę
-        rp.repair();  // reguła naprawia samą siebie, jeśli naruszono sygnaturę
+        // reguła naprawia samą siebie, jeśli naruszono sygnaturę
         rp.evaluate(); // aktualizacja macierzy pomyłek - uaktualnienie oceny
 
-//        System.out.println("* Sets evolve");
-        rsp.reset();
-        rsp.evaluate(); // tworzenie wieloklasowej oraz ważonej mac. pom.
-        rsp.select();  // selekcja elitarna
+        rsp.evaluate();      // tworzenie wieloklasowej oraz ważonej mac. pom.
         rsp.updateIndexes(); // naprawia wskaźniki do reguł
+        rsp.select();        // selekcja elitarnas
         rsp.evolve();  // reset (ruleSet=null;) oraz mutacja (uwzgl. elitarność)
         updateBest();
 
         // do raports and stuff
+
         debugOutputIfEnabled();
     }
 
@@ -83,27 +81,18 @@ public class CoPopulations {
 
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
     double max;
 
     private void debugOutputIfEnabled() {
-        if (!debug)
+        if (!ec.getDebugOptions().isGenerationStatisticsOutput()) {
             return;
+        }
 
         RuleSet ruleSet;
         {
             final SimpleStatistics ruleStats = ruleStats();
             final SimpleStatistics ruleSetStats = ruleSetStats();
-            double bestFitness = 0;
 
-//            if (ruleSetStats.getMax() > bestFitness) {
-            bestFitness = ruleSetStats.getMax();
             System.out.printf("%4d.  RULE: %s", i + 1, ruleStats);
             System.out.println("   RULESET stats: " + ruleSetStats);
 

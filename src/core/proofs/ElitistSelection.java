@@ -10,6 +10,7 @@ import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
 import core.vis.RuleASCIIPlotter;
+import java.util.Random;
 
 /**
  *
@@ -20,31 +21,37 @@ public class ElitistSelection {
     public static void main(String[] args) {
         FitnessEval fiteval = FitnessEvaluatorFactory.EVAL_FMEASURE;
 
-        ExecutionEnv ec = ExecutionContextFactory.MONK(1, false, 10, fiteval);
-        ec.setRulePopSize(10);
-        ec.setMaxRuleSetLength(5);
-        ec.setRsmp(0.05);
-        ec.setMt(0.05);
-        ec.setTokenCompetitionEnabled(true);
+        ExecutionEnv ec = ExecutionContextFactory.MONK(1, true, 10, fiteval);
+        ec.setRand(new Random(101004L));
+        ec.setRulePopSize(3);
+        ec.setMaxRuleSetLength(2);
+        ec.setRsmp(0.02);
+        ec.setMt(0.02);
+        ec.setTokenCompetitionEnabled(false);
         ec.setEliteSelectionSize(1);
         ec.setRuleSortingEnabled(false);
-        int popSize = 10;
+        ec.getDebugOptions().setAllTrue();
+        ec.getDebugOptions().setGenerationStatisticsGathered(false);
+
+        int popSize = 3;
         CoPopulations co = new CoPopulations(popSize, ec);
         RuleASCIIPlotter plotter = ec.getBundle().getPlotter();
         RulePrinter printer = ec.getBundle().getPrinter();
 
-        for (int i = 0; i < 100000; i++) {
-//            System.out.println("");
-//            System.out.println("Generation: " + i);
-//            System.out.println("Rules:");
-//            spitOutPops(co, printer);
-//
+        for (int i = 0; i < 3; i++) {
+            if (ec.getDebugOptions().isElitistSelectionSpecificOutput()) {
+                System.out.println("");
+                System.out.println("Generation: " + i);
+                System.out.println("Rules:");
+                spitOutPops(co, printer);
+            }
             co.evolve();
-            System.out.printf("%d : %s\n", i, co.ruleSetStats());
-//            spitOutPops(co, printer);
-//
-//            System.out.print(co.ruleStats());
-
+            if (ec.getDebugOptions().isElitistSelectionSpecificOutput()) {
+                spitOutPops(co, printer);
+                System.out.printf("%d : %s\n", i, co.ruleSetStats());
+            } else {
+                System.out.print(co.ruleStats());
+            }
         }
     }
 

@@ -50,6 +50,7 @@ public class Individual implements Mutable {
         c.mutator = mutator;
         c.tokens = 0;
         c.territory = 0;
+        c.rule = rule; // XXX TODO HACK
         return c;
     }
 

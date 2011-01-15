@@ -7,9 +7,7 @@ import core.token.TokenCompetition;
 import core.token.TokenizingEvaluator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,6 @@ public class RulePopulation implements Iterable<Individual> {
     final ExecutionEnv context;
     private List<Individual> next;
     private boolean tokenCompetition = true;
-    private int toSkip;
 
     public RulePopulation(ExecutionEnv ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
@@ -42,7 +39,6 @@ public class RulePopulation implements Iterable<Individual> {
         this.context = ctx;
     }
 
-
     public void randomize() {
         for (Individual ind : individuals)
             ind.randomize();
@@ -55,12 +51,19 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public void decode() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[DEC-RS]");
+
         for (Individual ind : individuals) {
             ind.decode(context.decoder());
+            ind.repair();
         }
     }
 
     public void evaluate() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[EVAL-r]");
+
         if (tokenCompetition)
             tokenCompetitionUpdate();
         else
@@ -68,6 +71,8 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     private void addIndividualToTemporaryPopulationAndUpdateIndex(int r) {
+        if (context.getDebugOptions().isSelectionResultOutput())
+            System.out.println("[SEL-r] selecting..." + r);
         int currentIndex = next.size(); // since we're filling it up
         addToIndexMap(r, currentIndex);
         Individual copy = individuals.get(r).copy();
@@ -75,25 +80,33 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     private void addToIndexMap(int oldId, int newId) {
-//        System.out.println("Add index to map called with " + oldId + " => " + newId);
-        if (oldIndexesToNew.containsKey(oldId)) {
-            return;
-            // brutal, but required
-            // if the mapping can result in more than one substitution,
-            // than it would lead to an explosion - no rules could be
-            // recombined, since we would have to be sure we're not
-            // destroying the elite rulesets.
-            // Tracking selected rules would require a lot more sophisticated
-            // mechanism and very intricate rule <-> ruleset interaction
-            // during update phase.
-            // So... NO to 1-N mapping.
-            // And it will run faster also.
+        // brutal, but required
+        // if the mapping can result in more than one substitution,
+        // than it would lead to an explosion - no rules could be
+        // recombined, since we would have to be sure we're not
+        // destroying the elite rulesets.
+        // Tracking selected rules would require a lot more sophisticated
+        // mechanism and very intricate rule <-> ruleset interaction
+        // during update phase.
+        // So... NO to 1-N mapping.
+        // And it will run faster also.
 
-            //set = oldIndexesToNew.get(oldId);
-        } else {
+        if (!oldIndexesToNew.containsKey(oldId))
             oldIndexesToNew.put(oldId, newId);
+
+        if (context.getDebugOptions().isAddingToIndexMapOutput())
+            System.out.println("[IDXup] New Map = " + oldIndexesToNew);
+    }
+
+    private void outputAllRules() {
+        RulePrinter printer = context.getBundle().getPrinter();
+        for (Individual object : individuals) {
+            System.out.println("object = " + object);
+            System.out.println("object = " + object.rule());
+            //System.out.printf("%.3f  ", object.cm().tpr());
+            String s = printer.prettyPrint(object.rule());
+            System.out.println(s);
         }
-//        System.out.println("New Map = " + oldIndexesToNew);
     }
 
     private void switchPopulations() {
@@ -124,10 +137,13 @@ public class RulePopulation implements Iterable<Individual> {
         final double mt = context.getMt();
         Collection<Integer> values = oldIndexesToNew.values();
         for (Integer i = 0; i < individuals.size(); i++) {
-            if (values.contains(i))
+            if (values.contains(i)) {
+                if (context.getDebugOptions().isMutationRuleSavingOutput()) {
+                    System.out.println("[MUT-r] Rule saving no: " + i);
+                }
                 continue;
+            }
             individuals.get(i).mutate(mt);
-
         }
     }
 
@@ -138,6 +154,9 @@ public class RulePopulation implements Iterable<Individual> {
             new HashMap<Integer, Integer>();
 
     public void select() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[SEL-r]");
+
         next = new ArrayList<Individual>(individuals.size());
 
         // index updates
@@ -163,7 +182,7 @@ public class RulePopulation implements Iterable<Individual> {
         }
         switchPopulations();
 
-//        debugOutput();
+        debugOutput();
     }
 
     public SimpleStatistics stats() {
@@ -184,7 +203,11 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     private void debugOutput() {
-        System.out.println(oldIndexesToNew);
+        if (context.getDebugOptions().isIndexMappingOutput())
+            System.out.println("[SEL] index mapping: " + oldIndexesToNew);
+        if (context.getDebugOptions().isRulePopulationAfterSelectionOutput()) {
+            outputAllRules();
+        }
     }
 
     public Individual getBest() {
@@ -202,12 +225,11 @@ public class RulePopulation implements Iterable<Individual> {
     Set<Integer> indexesToSave;
 
     private void saveTheRulesWhichAreNeededByRulePopulationsElitism() {
-//        System.out.println("Going to save rules no: " + indexesToSave);
+        if (context.getDebugOptions().isRuleSavingOutput())
+            System.out.println("[SAVE] Going to save rules no: " + indexesToSave);
         if (indexesToSave == null)
             return;
-        toSkip = indexesToSave.size();
         for (Integer i : indexesToSave) {
-
             addIndividualToTemporaryPopulationAndUpdateIndex(i);
         }
         indexesToSave = null;

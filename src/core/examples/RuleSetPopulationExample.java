@@ -55,7 +55,7 @@ public class RuleSetPopulationExample {
         FitnessEval fevl;
         RuleSet ruleSet;
         for (int i = 0; i < 100000; i++) {
-            rp.evolve();
+            rp.mutate();
 
             rp.decode();
             rp.repair();

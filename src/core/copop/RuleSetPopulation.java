@@ -35,6 +35,8 @@ public class RuleSetPopulation {
     }
 
     public void mutate() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[MUT-RS]");
         final double mprob = context.getRsmp();
         int toPass = eliteSelectionSize();
         for (PittsIndividual i : individuals) {
@@ -53,7 +55,8 @@ public class RuleSetPopulation {
     }
 
     public void updateIndexes() {
-//        System.out.println("Updating indexes");
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[IDXup-RS] Updating indexes");
         for (PittsIndividual rs : getIndividuals()) {
             rs.updateIndexes();
         }
@@ -64,6 +67,8 @@ public class RuleSetPopulation {
     }
 
     public void select() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[SEL-RS]");
         ArrayList<PittsIndividual> next = new ArrayList<PittsIndividual>(individuals.size());
         Collections.sort(individuals, new Comparator<PittsIndividual>() {
 
@@ -76,12 +81,15 @@ public class RuleSetPopulation {
         for (int i = 0, end = eliteSelectionSize(); i < end; i++) {
             final PittsIndividual ind = individuals.get(i);
             next.add(ind.copy());
-//            System.out.println("This one (" + i + ")is being saved: >>");
-//            System.out.println(context.getBundle().getPrinter().print(ind.getRS()));
-//            System.out.println(ind + "<<");
+            if (context.getDebugOptions().isSavedRuleOutput()) {
+                System.out.println("[SAVE-RS] This one (" + i + ")is being saved: >>\n");
+                System.out.println(context.getBundle().getPrinter().print(ind.getRS()));
+                System.out.println(ind + "<<");
+            }
             indexesToSave.addAll(ind.indexes);
         }
-        //System.out.println("Please save me: " + indexesToSave);
+        if (context.getDebugOptions().isSavedRuleOutput())
+            System.out.println("Please save me: " + indexesToSave);
         rpop.pleaseSaveThisRulesForMe(indexesToSave);
 
         TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
@@ -112,7 +120,11 @@ public class RuleSetPopulation {
     }
 
     public void evaluate() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[EVAL]");
+
         for (PittsIndividual i : getIndividuals()) {
+            i.reset();
             i.evaluate(context.data(), context.evaluator());
         }
     }

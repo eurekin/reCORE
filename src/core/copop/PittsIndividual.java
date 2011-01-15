@@ -195,10 +195,12 @@ public class PittsIndividual implements Mutable {
     }
 
     public void updateIndexes() {
-//        System.out.println("Before: " + toString());
+        if (ctx.getDebugOptions().isUpdatingIndexesOutput())
+            System.out.println("[IDXup] Before: " + toString());
         for (int i = 0; i < list.size(); i++) {
             Integer candidate = rpop.getNewIndexesFor(list.get(i));
-            //System.out.println("candidate = " + candidate);
+            if (ctx.getDebugOptions().isUpdatingIndexesOutput())
+                System.out.println("[IDXup] candidate = " + candidate);
             if (!indexes.contains(candidate))
                 list.set(i, candidate);
         }
@@ -215,7 +217,8 @@ public class PittsIndividual implements Mutable {
                     + ", newSize=" + indexes.size()
                     + ", listSize=" + list.size());
         }
-//        System.out.println("After: " + toString());
+        if (ctx.getDebugOptions().isUpdatingIndexesOutput())
+            System.out.println("[IDXup] After: " + toString());
 
     }
 }
