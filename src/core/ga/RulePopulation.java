@@ -6,7 +6,6 @@ import core.stat.SimpleStatistics;
 import core.token.TokenCompetition;
 import core.token.TokenizingEvaluator;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +32,7 @@ public class RulePopulation implements Iterable<Individual> {
         Mutator mutator = new Mutator(ctx.rand());
         for (int i = 0; i < ctx.size(); i++) {
             ind = new Individual(ctx.signature(), ctx.rand(),
-                    ctx.decoder(), mutator, ctx.fitnessEvaluator());
+                    ctx.decoder(), mutator, ctx.fitnessEvaluator(), ctx);
             individuals.add(ind);
         }
         this.context = ctx;
@@ -52,7 +51,7 @@ public class RulePopulation implements Iterable<Individual> {
 
     public void decode() {
         if (context.getDebugOptions().isEvolutionPhaseOutput())
-            System.out.println("[DEC-RS]");
+            System.out.println("[DEC-r]");
 
         for (Individual ind : individuals) {
             ind.decode(context.decoder());
@@ -100,16 +99,18 @@ public class RulePopulation implements Iterable<Individual> {
 
     private void outputAllRules() {
         RulePrinter printer = context.getBundle().getPrinter();
-        for (Individual object : individuals) {
-            System.out.println("object = " + object);
-            System.out.println("object = " + object.rule());
-            //System.out.printf("%.3f  ", object.cm().tpr());
-            String s = printer.prettyPrint(object.rule());
+         for (Individual ind : individuals) {
+            System.out.printf("Fitness=%5.1f%%\n", ind.fitness() * 100);
+            System.out.printf("%s  \n", ind.cm());
+            String s = printer.prettyPrint(ind.rule());
             System.out.println(s);
+            System.out.println("");
         }
     }
 
     private void switchPopulations() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[SEL-r] switching temporary pop -> current");
         individuals = next;
     }
 
@@ -135,14 +136,28 @@ public class RulePopulation implements Iterable<Individual> {
 
     public void mutate() {
         final double mt = context.getMt();
-        Collection<Integer> values = oldIndexesToNew.values();
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        if (indexesToSave != null)
+            for (Integer integer : indexesToSave) {
+                Integer get = oldIndexesToNew.get(integer);
+                if (context.getDebugOptions().isRuleSavingOutput()) {
+                    System.out.println("[MUT-r-pre] asked to save rule "
+                                       + integer + " received new index=" + get);
+                }
+                values.add(get);
+            }
+
         for (Integer i = 0; i < individuals.size(); i++) {
+            // we need to save some rules, represented by id's
+            // before mapping
             if (values.contains(i)) {
                 if (context.getDebugOptions().isMutationRuleSavingOutput()) {
                     System.out.println("[MUT-r] Rule saving no: " + i);
                 }
                 continue;
             }
+            if (context.getDebugOptions().isMutationRuleSavingOutput())
+                System.out.println("[MUT-r] Possibly mutating rule " + i);
             individuals.get(i).mutate(mt);
         }
     }
@@ -186,6 +201,8 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public SimpleStatistics stats() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[R-STATS] Gathering statistics");
         FitnessEval fevl = context.fitnessEvaluator();
         SimpleStatistics ss = new SimpleStatistics();
         for (Individual i : individuals) {
@@ -220,6 +237,8 @@ public class RulePopulation implements Iterable<Individual> {
     }
 
     public void pleaseSaveThisRulesForMe(Set<Integer> indexesToSave) {
+        if (context.getDebugOptions().isRuleSavingOutput())
+            System.out.println("[SAVE-R] Rule pop is being asked to save: " + indexesToSave);
         this.indexesToSave = indexesToSave;
     }
     Set<Integer> indexesToSave;
@@ -232,6 +251,5 @@ public class RulePopulation implements Iterable<Individual> {
         for (Integer i : indexesToSave) {
             addIndividualToTemporaryPopulationAndUpdateIndex(i);
         }
-        indexesToSave = null;
     }
 }

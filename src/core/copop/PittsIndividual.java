@@ -74,7 +74,7 @@ public class PittsIndividual implements Mutable {
         copy.mutator = mutator;
         copy.ruleNo = ruleNo;
         copy.clazz = clazz;
-        copy.ruleSet = ruleSet;
+        copy.ruleSet = ruleSet.copy();
         copy.cm = cm;
         copy.ctx = ctx;
         copy.list = new ArrayList<Integer>(list);
@@ -194,14 +194,15 @@ public class PittsIndividual implements Mutable {
         return ctx.fitnessEvaluator().eval(getCm().getWeighted());
     }
 
-    public void updateIndexes() {
+    public void updateIndexes(boolean elitist) {
+        String beforeString = toString();
         if (ctx.getDebugOptions().isUpdatingIndexesOutput())
-            System.out.println("[IDXup] Before: " + toString());
+            System.out.println("[IDXup] Before: " + beforeString);
         for (int i = 0; i < list.size(); i++) {
             Integer candidate = rpop.getNewIndexesFor(list.get(i));
             if (ctx.getDebugOptions().isUpdatingIndexesOutput())
                 System.out.println("[IDXup] candidate = " + candidate);
-            if (!indexes.contains(candidate))
+            if (elitist || !indexes.contains(candidate))
                 list.set(i, candidate);
         }
         int oldsize = indexes.size();
@@ -209,8 +210,12 @@ public class PittsIndividual implements Mutable {
         indexes.clear();
         indexes.addAll(list);
 
+        String afterString = toString();
         // check invariants
         if (indexes.size() != oldsize) {
+            System.out.println("Corrupt individual");
+            System.out.println("beforeString = " + beforeString);
+            System.out.println("afterString = " + afterString);
             throw new RuntimeException(
                     "Possible PittsIndividual corruption: "
                     + " oldSize=" + oldsize
@@ -218,7 +223,7 @@ public class PittsIndividual implements Mutable {
                     + ", listSize=" + list.size());
         }
         if (ctx.getDebugOptions().isUpdatingIndexesOutput())
-            System.out.println("[IDXup] After: " + toString());
+            System.out.println("[IDXup] After: " + afterString);
 
     }
 }

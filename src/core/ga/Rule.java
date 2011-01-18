@@ -68,4 +68,8 @@ public class Rule implements Serializable {
     public Individual individual() {
         return individual;
     }
+
+    Rule copy() {
+        return new Rule(new ArrayList<Selector>(sels), clazz);
+    }
 }

@@ -26,28 +26,28 @@ public class CoPopulations {
 
     private void initPopulations() {
         rp.decode();
-        rp.repair();
         rp.evaluate();
 
         rsp.evaluate();
     }
 
     public void evolve() {
+        debugOutputIfEnabled();
+        rsp.select();        // selekcja elitarnas
+        rsp.evolve();  // reset (ruleSet=null;) oraz mutacja (uwzgl. elitarność)
+        
         rp.select(); // buduje też indeks do zaktualizowania reguł
+        rsp.updateIndexes(); // naprawia wskaźniki do reguł
         rp.mutate(); // zachowuje elitarność
         rp.decode();  // bezwzględnie aktualizuje (dekoduje) regułę
         // reguła naprawia samą siebie, jeśli naruszono sygnaturę
         rp.evaluate(); // aktualizacja macierzy pomyłek - uaktualnienie oceny
 
         rsp.evaluate();      // tworzenie wieloklasowej oraz ważonej mac. pom.
-        rsp.updateIndexes(); // naprawia wskaźniki do reguł
-        rsp.select();        // selekcja elitarnas
-        rsp.evolve();  // reset (ruleSet=null;) oraz mutacja (uwzgl. elitarność)
         updateBest();
-
+        
         // do raports and stuff
 
-        debugOutputIfEnabled();
     }
 
     public SimpleStatistics ruleStats() {
@@ -75,12 +75,12 @@ public class CoPopulations {
         if (best == null) {
             best = rsp.getBest().copy();
         } else {
-            if (best.fitness() < rsp.getBest().fitness())
+            if (best.fitness()
+                < rsp.getBest().fitness())
                 best = rsp.getBest().copy();
         }
 
     }
-
     double max;
 
     private void debugOutputIfEnabled() {

@@ -2,6 +2,7 @@ package core.copop;
 
 import core.ga.Rule;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,10 @@ public class RuleSet implements Serializable {
         this.defaultClass = defaultClass;
     }
 
+    public RuleSet copy() {
+        return new RuleSet(new ArrayList<Rule>(rules), defaultClass);
+    }
+
     public int apply(List args) {
         for (Rule rule : rules) {
             if (!rule.apply(args))
@@ -26,6 +31,7 @@ public class RuleSet implements Serializable {
         }
         return defaultClass;
     }
+
     public int determineRuleNo(List args) {
         int i = 0;
         for (Rule rule : rules) {

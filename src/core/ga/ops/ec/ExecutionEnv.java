@@ -13,12 +13,20 @@ import java.util.Random;
  */
 public class ExecutionEnv {
 
-    int size;
     Random rand;
     Evaluator evaluator;
     DataSetBundle bundle;
     FitnessEval fitnessEvaluator;
     RuleDecoderSubractingOneFromClass decoder;
+    private double tokenCompetitionWeight = 1.0;
+    private boolean ruleSortingEnabled = false;
+    private boolean tokenCompetitionEnabled = true;
+    private int maxRuleSetLength = 9;
+    private int eliteSelectionSize = 1;
+    private double mt = 0.01;
+    int size = 200;
+    private double rsmp = 0.01;
+    DebugOptions debugOptions = new DebugOptions();
 
     public ExecutionEnv(int size, Random rand, Evaluator evaluator,
             DataSetBundle bundle, RuleDecoderSubractingOneFromClass decoder,
@@ -70,7 +78,6 @@ public class ExecutionEnv {
     public void setRulePopSize(int size) {
         this.size = size;
     }
-    private double mt = 0.01;
 
     public double getMt() {
         return mt;
@@ -79,7 +86,6 @@ public class ExecutionEnv {
     public void setMt(double mt) {
         this.mt = mt;
     }
-    private double rsmp = 0.1;
 
     public double getRsmp() {
         return rsmp;
@@ -88,7 +94,6 @@ public class ExecutionEnv {
     public void setRsmp(double rsmp) {
         this.rsmp = rsmp;
     }
-    private int maxRuleSetLength = 10;
 
     public int maxRuleSetLength() {
         return maxRuleSetLength;
@@ -101,16 +106,15 @@ public class ExecutionEnv {
     public void setBundle(DataSetBundle bundle) {
         this.bundle = bundle;
     }
-    private boolean tokenCompetitionEnabled = true;
 
     public boolean isTokenCompetitionEnabled() {
         return tokenCompetitionEnabled;
     }
 
     public void setTokenCompetitionEnabled(boolean tokenCompetitionEnabled) {
+        System.out.println("SETTTIING");
         this.tokenCompetitionEnabled = tokenCompetitionEnabled;
     }
-    private int eliteSelectionSize;
 
     public int getEliteSelectionSize() {
         return eliteSelectionSize;
@@ -120,8 +124,6 @@ public class ExecutionEnv {
         this.eliteSelectionSize = eliteSelectionSize;
     }
 
-    boolean ruleSortingEnabled = false;
-
     public boolean isRuleSortingEnabled() {
         return ruleSortingEnabled;
     }
@@ -129,8 +131,6 @@ public class ExecutionEnv {
     public void setRuleSortingEnabled(boolean ruleSortingEnabled) {
         this.ruleSortingEnabled = ruleSortingEnabled;
     }
-
-    DebugOptions debugOptions = new DebugOptions();
 
     public DebugOptions getDebugOptions() {
         return debugOptions;
@@ -140,4 +140,11 @@ public class ExecutionEnv {
         this.debugOptions = debugOptions;
     }
 
+    public double getTokenCompetitionWeight() {
+        return tokenCompetitionWeight;
+    }
+
+    public void setTokenCompetitionWeight(double tokenCompetitionWeight) {
+        this.tokenCompetitionWeight = tokenCompetitionWeight;
+    }
 }

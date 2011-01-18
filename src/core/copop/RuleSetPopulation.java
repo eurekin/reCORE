@@ -41,11 +41,17 @@ public class RuleSetPopulation {
         int toPass = eliteSelectionSize();
         for (PittsIndividual i : individuals) {
             if (toPass > 0) {
+                if (context.getDebugOptions().isMutationRuleSavingOutput())
+                    System.out.println("[MUT-RS] Saving " + i + " from mutation");
                 toPass--;
             } else {
+                if (context.getDebugOptions().isMutationRuleSavingOutput())
+                    System.out.print("[MUT-RS] Mutating.  " + i );
                 i.addOrRemoveWith(mprob);
                 i.mutateClass(mprob);
                 i.mutate(mprob);
+                if (context.getDebugOptions().isMutationRuleSavingOutput())
+                    System.out.println(" ==mut==> " + i );
             }
         }
     }
@@ -57,18 +63,20 @@ public class RuleSetPopulation {
     public void updateIndexes() {
         if (context.getDebugOptions().isEvolutionPhaseOutput())
             System.out.println("[IDXup-RS] Updating indexes");
+        int eliteCount = context.getEliteSelectionSize();
         for (PittsIndividual rs : getIndividuals()) {
-            rs.updateIndexes();
+            rs.updateIndexes(eliteCount >0);
+            eliteCount--;
         }
     }
 
     public int eliteSelectionSize() {
-        return eliteSelectionSize;
+        return context.getEliteSelectionSize();
     }
 
     public void select() {
         if (context.getDebugOptions().isEvolutionPhaseOutput())
-            System.out.println("[SEL-RS]");
+            System.out.println("[SEL-RS] sorting by fitness");
         ArrayList<PittsIndividual> next = new ArrayList<PittsIndividual>(individuals.size());
         Collections.sort(individuals, new Comparator<PittsIndividual>() {
 
@@ -78,11 +86,17 @@ public class RuleSetPopulation {
         });
 
         Set<Integer> indexesToSave = new HashSet<Integer>();
+        if (context.getDebugOptions().isSelectionResultOutput())
+            System.out.println("[SEL-RS-elite] Going to save " + eliteSelectionSize() + " rule sets.");
         for (int i = 0, end = eliteSelectionSize(); i < end; i++) {
+
             final PittsIndividual ind = individuals.get(i);
+            if (context.getDebugOptions().isSelectionResultOutput()) {
+                System.out.println("[SEL-RS-elite] selecting elite " + ind);
+            }
             next.add(ind.copy());
             if (context.getDebugOptions().isSavedRuleOutput()) {
-                System.out.println("[SAVE-RS] This one (" + i + ")is being saved: >>\n");
+                System.out.println("[SEL-RS-SAVE] This one (" + i + ")is being saved: >>\n");
                 System.out.println(context.getBundle().getPrinter().print(ind.getRS()));
                 System.out.println(ind + "<<");
             }
@@ -108,8 +122,13 @@ public class RuleSetPopulation {
         while (next.size() < individuals.size()) {
             int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
             PittsIndividual copy = individuals.get(r).copy();
+            if (context.getDebugOptions().isSelectionResultOutput()) {
+                System.out.println("[SEL-RS-roulette] selecting " + copy);
+            }
             next.add(copy);
         }
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[SEL-RS] switching temporary pop -> current");
         individuals = next;
     }
 
@@ -121,7 +140,7 @@ public class RuleSetPopulation {
 
     public void evaluate() {
         if (context.getDebugOptions().isEvolutionPhaseOutput())
-            System.out.println("[EVAL]");
+            System.out.println("[EVAL-RS]");
 
         for (PittsIndividual i : getIndividuals()) {
             i.reset();
@@ -130,6 +149,8 @@ public class RuleSetPopulation {
     }
 
     public SimpleStatistics stats() {
+        if (context.getDebugOptions().isEvolutionPhaseOutput())
+            System.out.println("[RS-STATS] Gathering statistics");
         SimpleStatistics ss = new SimpleStatistics();
         FitnessEval fevl = context.fitnessEvaluator();
         for (PittsIndividual i : getIndividuals()) {

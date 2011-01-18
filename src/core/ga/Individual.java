@@ -1,6 +1,7 @@
 package core.ga;
 
 import core.BinaryChromosome;
+import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
@@ -24,33 +25,36 @@ public class Individual implements Mutable {
     private FitnessEval fitnessEvaluator;
     private RuleChromosomeSignature signature;
     private RuleDecoderSubractingOneFromClass decoder;
+    private ExecutionEnv ctx;
 
     public Individual() {
     }
 
     public Individual(RuleChromosomeSignature signature, Random rand,
             RuleDecoderSubractingOneFromClass decoder, Mutator mutator,
-            FitnessEval fitnessEvaluator) {
+            FitnessEval fitnessEvaluator, ExecutionEnv ctx) {
         this.signature = signature;
         this.rand = rand;
         this.decoder = decoder;
         this.mutator = mutator;
         this.fitnessEvaluator = fitnessEvaluator;
+        this.ctx = ctx;
         chromosome = new BinaryChromosome(signature.getBits());
         randomize();
     }
 
     public Individual copy() {
         Individual c = new Individual();
-        c.fitnessEvaluator = fitnessEvaluator;
-        c.chromosome = chromosome.copy();
-        c.signature = signature;
+        c.ctx = ctx;
+        c.tokens = 0;
         c.rand = rand;
+        c.territory = 0;
         c.decoder = decoder;
         c.mutator = mutator;
-        c.tokens = 0;
-        c.territory = 0;
-        c.rule = rule; // XXX TODO HACK
+        c.rule = rule.copy(); 
+        c.signature = signature;
+        c.chromosome = chromosome.copy();
+        c.fitnessEvaluator = fitnessEvaluator;
         return c;
     }
 
@@ -135,7 +139,9 @@ public class Individual implements Mutable {
 
     public void penalizeToken() {
         //        System.out.printf("Penalizing fit=%.3f tok=%d ter=%d", fitness, tokens, territory);
-        fitness *= (double) (tokens) / (double) territory;
+        final double penalty = (double) (tokens) / (double) territory;
+        final double w = ctx.getTokenCompetitionWeight();
+        fitness = fitness * (1 - w) + penalty * (w);
         //        System.out.printf(" newfit=%.3f\n", fitness);
     }
 
