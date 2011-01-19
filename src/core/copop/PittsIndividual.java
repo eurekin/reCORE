@@ -103,13 +103,13 @@ public class PittsIndividual implements Mutable {
             for (Integer i : list) {
                 rs.add(inds.get(i).rule());
             }
-            sortRules(rs);
+            sortRulesIfEnabled(rs);
             ruleSet = new RuleSet(rs, clazz);
         }
         return ruleSet;
     }
 
-    private void sortRules(List<Rule> rs) {
+    private void sortRulesIfEnabled(List<Rule> rs) {
         if (!ctx.isRuleSortingEnabled())
             return;
 
@@ -195,9 +195,11 @@ public class PittsIndividual implements Mutable {
     }
 
     public void updateIndexes(boolean elitist) {
-        String beforeString = toString();
-        if (ctx.getDebugOptions().isUpdatingIndexesOutput())
+        String beforeString = "[enable updating indexes output to debug]";
+        if (ctx.getDebugOptions().isUpdatingIndexesOutput()) {
+            beforeString = toString();
             System.out.println("[IDXup] Before: " + beforeString);
+        }
         for (int i = 0; i < list.size(); i++) {
             Integer candidate = rpop.getNewIndexesFor(list.get(i));
             if (ctx.getDebugOptions().isUpdatingIndexesOutput())
@@ -210,7 +212,9 @@ public class PittsIndividual implements Mutable {
         indexes.clear();
         indexes.addAll(list);
 
-        String afterString = toString();
+        String afterString = beforeString;
+        if (ctx.getDebugOptions().isAddingToIndexMapOutput())
+            afterString = toString();
         // check invariants
         if (indexes.size() != oldsize) {
             System.out.println("Corrupt individual");
