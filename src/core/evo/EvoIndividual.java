@@ -6,6 +6,7 @@ import core.ga.Individual;
 import core.ga.Mutable;
 import core.ga.Mutator;
 import core.ga.Rule;
+import core.ga.RuleDecoderSubractingOneFromClass;
 import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
 import core.io.dataframe.UniformDataFrame;
@@ -53,7 +54,7 @@ import java.util.Random;
  *
  * @author gmatoga
  */
-class EvoIndividual implements Mutable {
+public final class EvoIndividual implements Mutable {
 
     private ConfMtx cm;
     private EvolutionPopulation population;
@@ -67,11 +68,14 @@ class EvoIndividual implements Mutable {
 
     public EvoIndividual(EvolutionPopulation population, ExecutionEnv ctx) {
         this.population = population;
+        this.ctx = ctx;
         this.mutator = new Mutator(ctx.rand());
         this.rand = ctx.rand();
         this.clazzMax = ctx.signature().getClassDomain().size();
         this.maxLength = ctx.maxRuleSetLength();
+        this.rules = new ArrayList<Individual>();
         initiateRandomRules();
+        decode();
     }
 
     public EvoIndividual copy() {
@@ -90,6 +94,13 @@ class EvoIndividual implements Mutable {
         copy.rules = copyRules;
         return copy;
 
+    }
+
+    public void decode() {
+        RuleDecoderSubractingOneFromClass decoder = ctx.decoder();
+        for (Individual individual : rules) {
+            individual.decode(decoder);
+        }
     }
 
     void mutate(double mt) {
@@ -146,7 +157,7 @@ class EvoIndividual implements Mutable {
             addRule();
             return;
         }
-        if (rules.size() == maxLength) {
+        if (rules.size() >= maxLength) {
             removeRule();
             return;
         }
@@ -177,7 +188,7 @@ class EvoIndividual implements Mutable {
     }
 
     private void initiateRandomRules() {
-        int howMany = rand.nextInt(clazzMax);
+        int howMany = rand.nextInt(maxLength);
         for (int i = 0; i < howMany; i++) {
             addRule();
         }

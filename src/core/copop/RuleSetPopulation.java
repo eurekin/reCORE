@@ -46,12 +46,12 @@ public class RuleSetPopulation {
                 toPass--;
             } else {
                 if (context.getDebugOptions().isMutationRuleSavingOutput())
-                    System.out.print("[MUT-RS] Mutating.  " + i );
+                    System.out.print("[MUT-RS] Mutating.  " + i);
                 i.addOrRemoveWith(mprob);
                 i.mutateClass(mprob);
                 i.mutate(mprob);
                 if (context.getDebugOptions().isMutationRuleSavingOutput())
-                    System.out.println(" ==mut==> " + i );
+                    System.out.println(" ==mut==> " + i);
             }
         }
     }
@@ -65,7 +65,7 @@ public class RuleSetPopulation {
             System.out.println("[IDXup-RS] Updating indexes");
         int eliteCount = context.getEliteSelectionSize();
         for (PittsIndividual rs : getIndividuals()) {
-            rs.updateIndexes(eliteCount >0);
+            rs.updateIndexes(eliteCount > 0);
             eliteCount--;
         }
     }
