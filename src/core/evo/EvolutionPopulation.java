@@ -3,6 +3,8 @@ package core.evo;
 import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.TreeMap;
 
 /**
@@ -17,14 +19,19 @@ public final class EvolutionPopulation {
     public EvolutionPopulation(ExecutionEnv context) {
         this.individuals = new ArrayList<EvoIndividual>();
         this.context = context;
-        for (int i = 0; i < context.size(); i++) {
+        for (int i = 0; i < context.getRuleSetCount(); i++) {
             individuals.add(new EvoIndividual(this, context));
         }
         evaluate();
     }
 
     public void mutate() {
+        int toLeaveAlone = context.getEliteSelectionSize();
         for (EvoIndividual evoIndividual : individuals) {
+            if (toLeaveAlone > 0) {
+                toLeaveAlone--;
+                continue;
+            }
             evoIndividual.mutate(context.getRsmp());
         }
     }
@@ -32,6 +39,8 @@ public final class EvolutionPopulation {
     public void select() {
         ArrayList<EvoIndividual> next =
                 new ArrayList<EvoIndividual>(individuals.size());
+
+        addEliteOnesFirst(next);
 
         TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
         double CDF[] = new double[individuals.size()];
@@ -85,6 +94,25 @@ public final class EvolutionPopulation {
     EvoIndividual best;
 
     public EvoIndividual getBest() {
-        return best;
+        double max = stats().getMax();
+        for (EvoIndividual i : getIndividuals()) {
+            if (i.fitness() == max)
+                return i;
+        }
+        return null;
+    }
+
+    private void addEliteOnesFirst(ArrayList<EvoIndividual> next) {
+        int eliteSelectionSize = context.getEliteSelectionSize();
+        Collections.sort(individuals, new Comparator<EvoIndividual>() {
+
+            public int compare(EvoIndividual o1, EvoIndividual o2) {
+                return Double.compare(o2.fitness(), o1.fitness());
+            }
+        });
+        for (int i = 0; i < eliteSelectionSize; i++) {
+            EvoIndividual get = individuals.get(i);
+            next.add(get);
+        }
     }
 }

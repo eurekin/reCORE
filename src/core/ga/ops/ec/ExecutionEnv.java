@@ -24,19 +24,40 @@ public class ExecutionEnv {
     private int maxRuleSetLength = 9;
     private int eliteSelectionSize = 1;
     private double mt = 0.01;
-    int size = 200;
+    int ruleCount = 200;
+    int ruleSetCount = 20;
     private double rsmp = 0.01;
     DebugOptions debugOptions = new DebugOptions();
+
+    public int getRuleCount() {
+        return ruleCount;
+    }
+
+    public void setRuleCount(int ruleCount) {
+        this.ruleCount = ruleCount;
+    }
+
+    public int getRuleSetCount() {
+        return ruleSetCount;
+    }
+
+    public void setRuleSetCount(int ruleSetCount) {
+        this.ruleSetCount = ruleSetCount;
+    }
 
     public ExecutionEnv(int size, Random rand, Evaluator evaluator,
             DataSetBundle bundle, RuleDecoderSubractingOneFromClass decoder,
             FitnessEval ruleFitEval) {
-        this.size = size;
+        this.ruleCount = size;
         this.rand = rand;
         this.bundle = bundle;
         this.decoder = decoder;
         this.evaluator = evaluator;
         this.fitnessEvaluator = ruleFitEval;
+    }
+
+    public void setSize(int size) {
+        this.ruleCount = size;
     }
 
     public void setRand(Random rand) {
@@ -72,11 +93,11 @@ public class ExecutionEnv {
     }
 
     public int size() {
-        return size;
+        return ruleCount;
     }
 
     public void setRulePopSize(int size) {
-        this.size = size;
+        this.ruleCount = size;
     }
 
     public double getMt() {
@@ -112,7 +133,6 @@ public class ExecutionEnv {
     }
 
     public void setTokenCompetitionEnabled(boolean tokenCompetitionEnabled) {
-        System.out.println("SETTTIING");
         this.tokenCompetitionEnabled = tokenCompetitionEnabled;
     }
 

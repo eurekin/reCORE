@@ -87,7 +87,7 @@ public final class EvoIndividual implements Mutable {
         copy.cm = cm;
         copy.maxLength = maxLength;
         // special care with rule individuals
-        ArrayList<Individual> copyRules = new ArrayList<Individual>(rules);
+        ArrayList<Individual> copyRules = new ArrayList<Individual>(rules.size());
         for (Individual individual : rules) {
             copyRules.add(individual.copy());
         }
