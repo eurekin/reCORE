@@ -6,8 +6,8 @@ package core.ga.ops;
  */
 public class NotEqOp implements Operator {
 
-    public boolean apply(int a, int b) {
-        return a != b;
+    public boolean apply(Object a, Object b) {
+        return !a.equals(b);
     }
 
     @Override

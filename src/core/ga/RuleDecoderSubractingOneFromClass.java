@@ -23,6 +23,11 @@ public class RuleDecoderSubractingOneFromClass {
         this.sig = sig;
     }
 
+    /**
+     * Here is an entry point to implement numerical attribute handling
+     * @param toDecode
+     * @return
+     */
     public Rule decode(Addressable toDecode) {
         this.addressable = toDecode;
         int clazz = decode(addressable, sig.getClazzAddress(), sig.getClazzSize());

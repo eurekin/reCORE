@@ -20,13 +20,14 @@ public class Rule implements Serializable {
     }
 
     public boolean apply(List args) {
+        if (sels.size() != args.size())
+            throw new RuntimeException("Rule args != no of sels");
+        
         for (int i = 0; i < args.size(); i++) {
-            if (sels.size() != args.size())
-                throw new RuntimeException("Rule args != no of sels");
             Selector sel = sels.get(i);
             if (!sel.on)
                 continue;
-            boolean result = sel.op.apply(sel.val, (Integer) (args.get(i)));
+            boolean result = sel.op.apply(sel.val, args.get(i));
             if (!result)
                 return false;
         }
