@@ -1,9 +1,13 @@
 package core.copop;
 
+import core.evo.EvoIndividual;
+import core.ga.Individual;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;
 import core.vis.RuleASCIIPlotter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -131,4 +135,38 @@ public class CoPopulations {
             "|  non-zero class vis    |    class number vis    |     rule number vis    |";
     private static String HORSPC =
             "+------------------------+------------------------+------------------------+";
+
+
+    int population = 0;
+    public List<PopInfo> popInfo = new ArrayList<PopInfo>();
+
+    /**
+     * Fixme
+     */
+    private void debugFitness() {
+        PopInfo info = new PopInfo();
+        for (PittsIndividual evoIndividual : rsp.getIndividuals()) {
+
+            if (evoIndividual.getRS().rules.size() == 1) {
+                info.oneRuleIndividuals++;
+
+//                if (onlyRule.fitness() < evoIndividual.fitness())
+                    info.howManyHaveBetterAccThanItsRule++;
+
+            }
+
+        }
+        population++;
+    }
+
+    public static class PopInfo {
+
+        public int oneRuleIndividuals, howManyHaveBetterAccThanItsRule;
+
+        @Override
+        public String toString() {
+            return "("+howManyHaveBetterAccThanItsRule+"/"+oneRuleIndividuals+")";
+        }
+
+    }
 }
