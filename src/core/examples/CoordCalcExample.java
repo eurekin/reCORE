@@ -1,12 +1,13 @@
 
 package core.examples;
 
+import core.io.repr.col.Domain;
+import core.io.repr.col.IntegerDomain;
 import core.vis.CoordCalc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -24,14 +25,14 @@ public class CoordCalcExample {
             {1, 2, 3, 4},
             {1, 2}
         };
-        List<Set> sets = new ArrayList<Set>();
+        List<Domain> sets = new ArrayList<Domain>();
         List<List<Integer>> lists = new ArrayList<List<Integer>>();
         List<Integer> test;
         List<Integer> answer;
         for (Integer[] integers : monk) {
             final List<Integer> l = Arrays.asList(integers);
             lists.add(new ArrayList<Integer>(l));
-            sets.add(new HashSet(l));
+            sets.add(new IntegerDomain(new HashSet(l)));
         }
         CoordCalc tda = new CoordCalc(sets);
 
@@ -44,7 +45,7 @@ public class CoordCalcExample {
                                 test = Arrays.asList(a, b, c, d, e, f);
                                 answer = tda.rev(tda.getX(test), tda.getY(test));
                                 if (!answer.equals(test)) {
-                                    throw new RuntimeException("Wrong rev<>x,y mapping");
+                                    throw new RuntimeException("Wrong rev<>x,y mapping " + test + ", " + answer);
                                 }
                             }
                         }

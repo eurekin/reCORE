@@ -1,7 +1,5 @@
 package core.copop;
 
-import core.evo.EvoIndividual;
-import core.ga.Individual;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;

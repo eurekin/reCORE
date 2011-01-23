@@ -15,6 +15,6 @@ public class GrayBinaryDecoderPlusONE implements BinaryDecoder {
             if (bit)
                 d++;
         }
-        return d ; // FIXMEEEEE TODO XXX
+        return d; // FIXMEEEEE TODO XXX
     }
 }

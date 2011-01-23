@@ -2,7 +2,7 @@ package core;
 
 import core.ga.RuleChromosomeSignature;
 import core.ga.RulePrinter;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
 import core.vis.RuleASCIIPlotter;
 
 /**
@@ -11,13 +11,13 @@ import core.vis.RuleASCIIPlotter;
  */
 public class DataSetBundle {
 
-    UniformDataFrame<Integer, Integer> data;
+    DataFrame  data;
     RuleASCIIPlotter plotter;
     RuleChromosomeSignature signature;
     RulePrinter printer;
     String creationArgs;
 
-    public DataSetBundle(UniformDataFrame<Integer, Integer> data,
+    public DataSetBundle(DataFrame data,
             RuleASCIIPlotter plotter, RuleChromosomeSignature signature,
             RulePrinter printer, String creationArgs) {
         this.data = data;
@@ -27,7 +27,7 @@ public class DataSetBundle {
         this.creationArgs = creationArgs;
     }
 
-    public UniformDataFrame<Integer, Integer> getData() {
+    public DataFrame getData() {
         return data;
     }
 

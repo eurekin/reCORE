@@ -4,7 +4,8 @@ import core.BinaryChromosome;
 import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
 import core.io.dataframe.Row;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
+import core.io.repr.col.Domain;
 import core.stat.BinaryConfMtx;
 import java.util.List;
 import java.util.Random;
@@ -51,14 +52,14 @@ public class Individual implements Mutable {
         c.territory = 0;
         c.decoder = decoder;
         c.mutator = mutator;
-        c.rule = rule.copy(); 
+        c.rule = rule.copy();
         c.signature = signature;
         c.chromosome = chromosome.copy();
         c.fitnessEvaluator = fitnessEvaluator;
         return c;
     }
 
-    public void evaluate(UniformDataFrame<Integer, Integer> data,
+    public void evaluate(DataFrame data,
             Evaluator evaluator) {
         cm = new BinaryConfMtx();
         for (Row<Integer, Integer> row : data)
@@ -85,7 +86,7 @@ public class Individual implements Mutable {
         List<Selector> allSelectors = rule.getAllSelectors();
         for (int selId = 0; selId < allSelectors.size(); selId++) {
             Selector sel = allSelectors.get(selId);
-            Set domain = signature.getAttrDomain().get(selId);
+            Domain domain = signature.getAttrDomain().get(selId);
             while (!domain.contains(sel.val)) {
                 Integer startAddr = signature.getGeneAddresses()[selId] + 2;
                 Integer length = signature.getValueCodeSizes()[selId];

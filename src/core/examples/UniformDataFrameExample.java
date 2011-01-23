@@ -3,7 +3,7 @@ package core.examples;
 import core.DataSetFactory;
 import core.io.dataframe.Row;
 import core.io.dataframe.Mapper;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
 import core.io.repr.col.DomainMemoizable;
 import core.io.repr.col.Column;
 import java.io.InputStream;
@@ -18,7 +18,7 @@ public class UniformDataFrameExample {
 
     public static void main(String[] args) {
         System.out.println("\n\n\nData set:");
-        UniformDataFrame<Integer, Integer> df = DataSetFactory.MONK(1, false);
+        DataFrame df = DataSetFactory.MONK(1, false);
         for (Row<Integer, Integer> row : df) {
             System.out.print("<< ");
             for (Integer integer : row.getAtts()) {

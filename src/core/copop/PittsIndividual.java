@@ -8,7 +8,7 @@ import core.ga.Rule;
 import core.ga.RulePopulation;
 import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
 import core.stat.BinaryConfMtx;
 import core.stat.ConfMtx;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class PittsIndividual implements Mutable {
         return cm;
     }
 
-    public void evaluate(UniformDataFrame<Integer, Integer> data,
+    public void evaluate(DataFrame data,
             Evaluator evaluator) {
         cm = new ConfMtx(clazzMax);
         for (Row<Integer, Integer> row : data) {

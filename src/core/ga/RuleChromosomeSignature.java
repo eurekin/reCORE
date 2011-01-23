@@ -1,10 +1,12 @@
 package core.ga;
 
+import core.io.repr.col.Domain;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 import static java.lang.Math.*;
 import core.io.repr.col.DomainMemoizable;
+import core.io.repr.col.IntegerDomain;
 
 /**
  * 
@@ -40,30 +42,37 @@ import core.io.repr.col.DomainMemoizable;
  * Genes have different lengths.
  * 
  * Switch, Relation, AtrId have constant length of 1, 1 and .
- * 
+ *
+ * 22.01.2011
+ *
+ * Modification is needed to handle numerical values
+ *
+ * At first, I'll implement only '>=' and '<=' operators.
+ *
  * @author Rekin
  * 
  */
 public class RuleChromosomeSignature {
 
-    Set classDomain;
+    IntegerDomain classDomain;
     Integer clazzAddress;
-    List<Set> attrDomain;
+    List<Domain> attrDomain;
     Integer[] geneAddresses;
     Integer[] valueCodeSizes;
     final int relCodeSize = 1;
     final int switchCodeSize = 1;
+    Class[] types;
 
     public RuleChromosomeSignature(List<DomainMemoizable> attributes,
             DomainMemoizable classCol) {
-        attrDomain = new ArrayList<Set>();
+        attrDomain = new ArrayList<Domain>();
         valueCodeSizes = new Integer[attributes.size()];
         int i = 0;
         for (DomainMemoizable att : attributes) {
             attrDomain.add(att.getDomain());
-            valueCodeSizes[i++] = noOfBitsToEncode(att.getDomain().size());
+            valueCodeSizes[i++] = att.getDomain().bitSize();
         }
-        classDomain = classCol.getDomain();
+        classDomain = (IntegerDomain) classCol.getDomain();
         calculateGeneAddresses();
     }
 
@@ -79,11 +88,11 @@ public class RuleChromosomeSignature {
         return geneAddresses;
     }
 
-    public List<Set> getAttrDomain() {
+    public List<Domain> getAttrDomain() {
         return attrDomain;
     }
 
-    public Set getClassDomain() {
+    public IntegerDomain getClassDomain() {
         return classDomain;
     }
 
@@ -101,15 +110,11 @@ public class RuleChromosomeSignature {
 
     public int getBits() {
         int sum = 0;
-        for (Set set : attrDomain) {
-            sum += noOfBitsToEncode(set.size()) + switchCodeSize + relCodeSize;
+        for (Domain dom : attrDomain) {
+            sum += dom.bitSize() + switchCodeSize + relCodeSize;
         }
-        sum += noOfBitsToEncode(classDomain.size());
+        sum += classDomain.bitSize();
         return sum;
-    }
-
-    private int noOfBitsToEncode(int n) {
-        return max(1, (int) ceil(log10(n) / log10(2)));
     }
 
     private void calculateGeneAddresses() {

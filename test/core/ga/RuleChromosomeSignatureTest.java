@@ -1,6 +1,8 @@
 package core.ga;
 
+import core.io.repr.col.Domain;
 import core.io.repr.col.DomainMemoizable;
+import core.io.repr.col.IntegerDomain;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +32,8 @@ public class RuleChromosomeSignatureTest {
         for (final Set mo : mockSets) {
             mockatts.add(new DomainMemoizable() {
 
-                public Set getDomain() {
-                    return mo;
+                public Domain getDomain() {
+                    return new IntegerDomain((HashSet<Integer>) mo);
                 }
             });
         }

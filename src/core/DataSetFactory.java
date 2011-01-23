@@ -6,7 +6,7 @@ import core.io.LineSchema;
 import core.io.ResultConsumer;
 import core.io.SplittingLineProcessor;
 import core.io.StringInterpreter;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
 import core.io.repr.DataSetBuildingConsumer;
 import core.io.repr.col.AttributeColumn;
 import core.io.repr.col.Cardinal;
@@ -26,7 +26,7 @@ public class DataSetFactory {
     private DataSetFactory() {
     }
 
-    public static UniformDataFrame<Integer, Integer> MONK(int no, boolean train) {
+    public static DataFrame MONK(int no, boolean train) {
         InputStream in = getInputStream(no, train);
         DataSetBuildingConsumer cons = initConsumer();
         SplittingLineProcessor processor = initProcessor(cons);
@@ -34,12 +34,12 @@ public class DataSetFactory {
         isp.process();
 
         ColumnSchema filled = cons.getSchema();
-        Column<Integer> classCol = (Column<Integer>) filled.getColumns().get(0);
-        List<Column<Integer>> attrs = new ArrayList<Column<Integer>>();
+        Column classCol =  filled.getColumns().get(0);
+        List<Column> attrs = new ArrayList<Column>();
         for (int i = 1; i < 7; i++) { // column 0 - class
             attrs.add(filled.getColumns().get(i));
         }
-        return new UniformDataFrame<Integer, Integer>(classCol, attrs, cons.getCount());
+        return new DataFrame(classCol, attrs, cons.getCount());
     }
 
     private static SplittingLineProcessor initProcessor(ResultConsumer cons) {

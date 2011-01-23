@@ -4,7 +4,7 @@ import core.DataSetBundle;
 import core.ga.Evaluator;
 import core.ga.RuleChromosomeSignature;
 import core.ga.RuleDecoderSubractingOneFromClass;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
 import java.util.Random;
 
 /**
@@ -72,7 +72,7 @@ public class ExecutionEnv {
         return bundle;
     }
 
-    public UniformDataFrame<Integer, Integer> data() {
+    public DataFrame data() {
         return bundle.getData();
     }
 

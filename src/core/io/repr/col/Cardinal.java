@@ -7,28 +7,28 @@ import java.util.Set;
  *
  * @author Rekin
  */
-public class Cardinal<T> implements DomainMemoizable<T>, ColumnDecorator<T> {
+public class Cardinal implements DomainMemoizable, ColumnDecorator {
 
-    private Set<T> memoized = new HashSet<T>();
-    Column<T> delegate;
+    private HashSet memoized = new HashSet();
+    Column delegate;
 
-    public Cardinal(Column<T> delegate) {
+    public Cardinal(Column delegate) {
         this.delegate = delegate;
     }
 
-    public Set<T> getDomain() {
-        return memoized;
+    public Domain getDomain() {
+        return new IntegerDomain(memoized);
     }
 
     public Column getDecorated() {
         return delegate;
     }
 
-    public T get(int i) {
+    public Object get(int i) {
         return delegate.get(i);
     }
 
-    public void add(T el) {
+    public void add(Object el) {
         memoized.add(el);
         delegate.add(el);
     }

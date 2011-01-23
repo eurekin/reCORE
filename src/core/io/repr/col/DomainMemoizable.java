@@ -1,12 +1,10 @@
 package core.io.repr.col;
 
-import java.util.Set;
-
 /**
  *
  * @author Rekin
  */
-public interface DomainMemoizable<T> {
+public interface DomainMemoizable {
 
-    public Set<T> getDomain();
+    public Domain getDomain();
 }

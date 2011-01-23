@@ -9,7 +9,7 @@ import core.ga.Rule;
 import core.ga.RuleDecoderSubractingOneFromClass;
 import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
-import core.io.dataframe.UniformDataFrame;
+import core.io.dataframe.DataFrame;
 import core.stat.ConfMtx;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +128,7 @@ public final class EvoIndividual implements Mutable {
         return cm;
     }
 
-    public void evaluate(UniformDataFrame<Integer, Integer> data,
+    public void evaluate(DataFrame data,
             Evaluator evaluator) {
         cm = new ConfMtx(clazzMax);
         RuleSet rS = getRS();

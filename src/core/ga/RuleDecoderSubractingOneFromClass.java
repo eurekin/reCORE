@@ -2,6 +2,7 @@ package core.ga;
 
 import core.ga.ops.OpFactory;
 import core.ga.ops.Operator;
+import core.io.repr.col.Domain;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,23 +50,18 @@ public class RuleDecoderSubractingOneFromClass {
         int i = sig.getGeneAddresses()[selId];
         boolean on = toDecode.get(i);
         Operator op = toDecode.get(i + 1) ? OpFactory.eq() : OpFactory.neq();
-        int val = decode(toDecode, i + 2, sig.getValueCodeSizes()[selId]);
-        //notifyAboutValue(val);
+        Integer codeSize = sig.getValueCodeSizes()[selId];
+        Domain domain = sig.getAttrDomain().get(selId);
+        int val = decode(toDecode, i + 2, codeSize, domain);
         return new Selector(on, op, val);
+    }
+
+    private int decode(Addressable toDecode, int start, int size, Domain domain) {
+        int decoded = dec.decode(toDecode, start, size);
+        return decoded;
     }
 
     private int decode(Addressable toDecode, int start, int size) {
         return dec.decode(toDecode, start, size);
-    }
-    private final HashSet<Integer> set = new HashSet<Integer>();
-
-    private void notifyAboutValue(int val) {
-        boolean newval = false;
-        if (!set.contains(val)) {
-            newval = true;
-        }
-        set.add(val);
-        if (newval)
-            System.out.println("new value in set: " + set);
     }
 }

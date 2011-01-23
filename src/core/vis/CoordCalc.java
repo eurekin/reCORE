@@ -1,12 +1,13 @@
 package core.vis;
 
 import core.ga.RuleChromosomeSignature;
+import core.io.repr.col.Domain;
+import core.io.repr.col.IntegerDomain;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 
 /**
  *
@@ -14,33 +15,33 @@ import java.util.Set;
  */
 public class CoordCalc {
 
-    private List<Set> hor, ver;
+    private List<IntegerDomain> hor, ver;
     private List<Integer> horMul, verMul;
 
     public CoordCalc(RuleChromosomeSignature sig) {
         this(sig.getAttrDomain());
     }
 
-    public CoordCalc(List<Set> attrs) {
-        this.hor = new ArrayList<Set>();
-        this.ver = new ArrayList<Set>();
+    public CoordCalc(List<Domain> attrs) {
+        this.hor = new ArrayList<IntegerDomain>();
+        this.ver = new ArrayList<IntegerDomain>();
         divideAttrsInHalf(attrs);
         this.horMul = calculateMultipliers(hor);
         this.verMul = calculateMultipliers(ver);
     }
 
-    private void divideAttrsInHalf(List<Set> ads) {
+    private void divideAttrsInHalf(List<Domain> ads) {
         int half = ads.size() / 2;
         for (int i = 0; i < ads.size(); i++) {
-            List<Set> where = i < half ? ver : hor;
-            where.add(ads.get(i));
+            List<IntegerDomain> where = i < half ? ver : hor;
+            where.add((IntegerDomain)ads.get(i));
         }
     }
 
-    private static List<Integer> calculateMultipliers(List<Set> l) {
+    private static List<Integer> calculateMultipliers(List<IntegerDomain> l) {
         LinkedList<Integer> r = new LinkedList<Integer>();
         int mul = 1;
-        ListIterator<Set> it = l.listIterator(l.size());
+        ListIterator<IntegerDomain> it = l.listIterator(l.size());
         while (it.hasPrevious()) {
             r.addFirst(mul);
             mul *= it.previous().size();
@@ -64,8 +65,8 @@ public class CoordCalc {
         return getMax(ver, verMul);
     }
 
-    private int getMax(List<Set> l, List<Integer> m) {
-        ListIterator<Set> ds = l.listIterator();
+    private int getMax(List<IntegerDomain> l, List<Integer> m) {
+        ListIterator<IntegerDomain> ds = l.listIterator();
         ListIterator<Integer> ms = m.listIterator();
         int dim = 1;
         while (ms.hasNext()) {
