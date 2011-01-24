@@ -11,9 +11,9 @@ public class Selector implements Serializable {
 
     boolean on;
     Operator op;
-    int val;
+    Object val;
 
-    public Selector(boolean on, Operator op, int val) {
+    public Selector(boolean on, Operator op, Object val) {
         this.on = on;
         this.op = op;
         this.val = val;

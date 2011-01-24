@@ -11,7 +11,7 @@ import core.stat.ConfMtx;
  */
 public interface Evaluator {
 
-    void evaluate(Rule rule, Row<Integer, Integer> row, BinaryConfMtx cm);
+    void evaluate(Rule rule, Row row, BinaryConfMtx cm);
 
-    void evaluate(RuleSet rs, Row<Integer, Integer> row, ConfMtx cm);
+    void evaluate(RuleSet rs, Row row, ConfMtx cm);
 }

@@ -6,6 +6,7 @@ import core.ga.ops.ec.FitnessEval;
 import core.io.dataframe.Row;
 import core.io.dataframe.DataFrame;
 import core.io.repr.col.Domain;
+import core.io.repr.col.IntegerDomain;
 import core.stat.BinaryConfMtx;
 import java.util.List;
 import java.util.Random;
@@ -25,14 +26,14 @@ public class Individual implements Mutable {
     private BinaryChromosome chromosome;
     private FitnessEval fitnessEvaluator;
     private RuleChromosomeSignature signature;
-    private RuleDecoderSubractingOneFromClass decoder;
+    private RuleDecoder decoder;
     private ExecutionEnv ctx;
 
     public Individual() {
     }
 
     public Individual(RuleChromosomeSignature signature, Random rand,
-            RuleDecoderSubractingOneFromClass decoder, Mutator mutator,
+            RuleDecoder decoder, Mutator mutator,
             FitnessEval fitnessEvaluator, ExecutionEnv ctx) {
         this.signature = signature;
         this.rand = rand;
@@ -62,12 +63,13 @@ public class Individual implements Mutable {
     public void evaluate(DataFrame data,
             Evaluator evaluator) {
         cm = new BinaryConfMtx();
-        for (Row<Integer, Integer> row : data)
+        for (Row row : data) {
             evaluator.evaluate(rule(), row, cm);
+        }
         fitness = fitnessEvaluator.eval(cm);
     }
 
-    public void decode(RuleDecoderSubractingOneFromClass decoder) {
+    public void decode(RuleDecoder decoder) {
         rule = decoder.decode(chromosome);
         rule.setIndividual(this);
     }
@@ -95,6 +97,15 @@ public class Individual implements Mutable {
                 allSelectors.set(selId, sel);
                 rule.reset();
             }
+        }
+        repairClass();
+    }
+
+    private void repairClass() {
+        IntegerDomain classDomain = signature.getClassDomain();
+        while (!classDomain.contains(rule.clazz)) {
+            randomize(signature.getClazzAddress(), signature.getClazzSize());
+            rule.clazz = decoder.decodeClass(chromosome());
         }
     }
 

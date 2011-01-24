@@ -65,10 +65,10 @@ public class DataSetFactory {
     private static DataSetBuildingConsumer initConsumer() {
         ColumnSchema schema = new ColumnSchema(9);
         for (int i = 0; i < 7; i++) {
-            schema.setAt(i, new Cardinal(new AttributeColumn<Integer>()));
+            schema.setAt(i, new Cardinal(new AttributeColumn()));
         }
-        schema.setAt(7, new Unique(new AttributeColumn<String>()));
-        schema.setAt(8, new AttributeColumn<Integer>());
+        schema.setAt(7, new Unique(new AttributeColumn()));
+        schema.setAt(8, new AttributeColumn());
         return new DataSetBuildingConsumer(schema);
     }
 }

@@ -14,7 +14,7 @@ public final class FloatDomain implements Domain, DomainAdjuster {
 
     public FloatDomain(float min, float max) {
         if (min > max)
-            throw new IllegalArgumentException("min > max ");
+            throw new IllegalArgumentException("min > max");
         this.min = min;
         this.max = max;
         this.range = max - min;

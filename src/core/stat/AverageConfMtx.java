@@ -20,6 +20,8 @@ public class AverageConfMtx extends BinaryConfMtx {
 
     private void calculateStats() {
         for (BinaryConfMtx g : cms) {
+            if (count == 0)
+                continue;
             w = (g.tp + g.fn) / (double) count;
             tp += g.tp;
             fp += g.fp;
@@ -37,7 +39,8 @@ public class AverageConfMtx extends BinaryConfMtx {
     @Override
     public double COREwithPenalty(int n) {
         double val = 0;
-        for (BinaryConfMtx g : cms) val += g.COREwithPenalty(n) * (g.tp + g.fn);
+        for (BinaryConfMtx g : cms)
+            val += g.COREwithPenalty(n) * (g.tp + g.fn);
         return val / count;
     }
 

@@ -19,9 +19,9 @@ public class UniformDataFrameExample {
     public static void main(String[] args) {
         System.out.println("\n\n\nData set:");
         DataFrame df = DataSetFactory.MONK(1, false);
-        for (Row<Integer, Integer> row : df) {
+        for (Row row : df) {
             System.out.print("<< ");
-            for (Integer integer : row.getAtts()) {
+            for (Object integer : row.getAtts()) {
                 System.out.print(integer + " ");
             }
             System.out.println(">> " + row.getClazz());
@@ -30,9 +30,9 @@ public class UniformDataFrameExample {
         System.out.println("\n\n\nData values mapped:");
         InputStream in2 = Mapper.class.getResourceAsStream("/monks/monks.map");
         Mapper m = new Mapper(in2);
-        for (Row<Integer, Integer> row : df) {
+        for (Row row : df) {
             System.out.print("<< ");
-            List<Integer> atrs = row.getAtts();
+            List  atrs = row.getAtts();
             for (int i = 0; i < atrs.size(); i++) {
                 System.out.print(m.valueMap(i).get(atrs.get(i)) + " ");
             }
@@ -40,7 +40,7 @@ public class UniformDataFrameExample {
         }
     }
 
-    public static List<DomainMemoizable> getColsWithDomain(List<Column<Integer>> columns) {
+    public static List<DomainMemoizable> getColsWithDomain(List<Column> columns) {
         List<DomainMemoizable> l = new ArrayList<DomainMemoizable>();
         for (Column column : columns) {
             if (column instanceof DomainMemoizable) {

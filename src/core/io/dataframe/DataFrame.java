@@ -54,7 +54,16 @@ public class DataFrame extends AbstractList<Row> {
 
         private RowImpl(int index) {
             this.index = index;
-            this.clazz = (Integer) classColumn.get(index);
+            Object ci = classColumn.get(index);
+            int casted;
+            if (ci instanceof Float) {
+                casted = ((Float) ci).intValue();
+            } else if (ci instanceof Integer) {
+                casted = ((Integer) ci).intValue();
+            } else {
+                throw new IllegalStateException("Class attr not float or int");
+            }
+            this.clazz = casted;
         }
 
         public Integer getClazz() {
@@ -71,15 +80,16 @@ public class DataFrame extends AbstractList<Row> {
 
         private final class AttrView extends AbstractList {
 
-            private final HashMap<Integer, Object> mem = new HashMap<Integer, Object>();
+            private final HashMap<Object, Object> mem = new HashMap<Object, Object>();
             final int size1 = attributes.size();
 
             @Override
             public Object get(int vid) {
                 if (mem.containsKey(vid)) {
-                    return mem.get(vid);
+                    return ((Float) mem.get(vid));
                 } else {
-                    Object value = attributes.get(vid).get(index);
+                    Column column = attributes.get(vid);
+                    Object value = column.get(index);
                     mem.put(vid, value);
                     return value;
                 }

@@ -21,12 +21,12 @@ public class TokenCompetition {
         }
     }
 
-    void onTerritory(Individual individual, Row<Integer, Integer> row) {
+    void onTerritory(Individual individual, Row row) {
         individual.increaseTerritory();
         addToTerritory(row, individual);
     }
 
-    private void addToTerritory(Row<Integer, Integer> row, Individual individual) {
+    private void addToTerritory(Row row, Individual individual) {
         final int id = row.getId();
         if (territory.get(id) == null)
             territory.set(id, new HashSet<Individual>());

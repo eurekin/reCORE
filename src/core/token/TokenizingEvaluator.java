@@ -21,7 +21,7 @@ public class TokenizingEvaluator implements Evaluator {
         this.tokenComp = comp;
     }
 
-    public void evaluate(Rule rule, Row<Integer, Integer> row, BinaryConfMtx cm) {
+    public void evaluate(Rule rule, Row row, BinaryConfMtx cm) {
         boolean predicted = rule.apply(row.getAtts());
         boolean same = row.getClazz().equals(rule.getClazz());
 
@@ -42,7 +42,7 @@ public class TokenizingEvaluator implements Evaluator {
         }
     }
 
-    public void evaluate(RuleSet rs, Row<Integer, Integer> row, ConfMtx cm) {
+    public void evaluate(RuleSet rs, Row row, ConfMtx cm) {
         delegate.evaluate(rs, row, cm);
     }
 }

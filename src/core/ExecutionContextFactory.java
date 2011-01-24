@@ -2,7 +2,7 @@ package core;
 
 import core.ga.DefaultEvaluator;
 import core.ga.GrayBinaryDecoderPlusONE;
-import core.ga.RuleDecoderSubractingOneFromClass;
+import core.ga.RuleDecoder;
 import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
 import java.util.Random;
@@ -22,8 +22,8 @@ public class ExecutionContextFactory {
         final DataSetBundle mb = DataSetBundleFactory.MONK(version, train);
         final DefaultEvaluator eval = new DefaultEvaluator();
         final GrayBinaryDecoderPlusONE bdec = new GrayBinaryDecoderPlusONE();
-        final RuleDecoderSubractingOneFromClass dec =
-                new RuleDecoderSubractingOneFromClass(mb.getSignature(), bdec);
+        final RuleDecoder dec =
+                new RuleDecoder(mb.getSignature(), bdec);
         return new ExecutionEnv(popsize, random, eval, mb, dec, ruleFitEval);
     }
 }

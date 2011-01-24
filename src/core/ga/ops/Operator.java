@@ -8,5 +8,5 @@ import java.io.Serializable;
  */
 public interface Operator extends Serializable {
 
-    public boolean apply(Object a, Object b);
+     public boolean apply(Object a, Object b);
 }

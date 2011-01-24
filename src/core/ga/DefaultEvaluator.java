@@ -11,7 +11,7 @@ import core.stat.BinaryConfMtx;
  */
 public class DefaultEvaluator implements Evaluator {
 
-    public void evaluate(Rule rule, Row<Integer, Integer> row, BinaryConfMtx cm) {
+    public void evaluate(Rule rule, Row row, BinaryConfMtx cm) {
         boolean predicted = rule.apply(row.getAtts());
         boolean same = row.getClazz().equals(rule.getClazz());
 
@@ -29,8 +29,8 @@ public class DefaultEvaluator implements Evaluator {
             }
         }
     }
-    public void evaluate(RuleSet rs, Row<Integer, Integer> row, ConfMtx cm) {
-        int expected = row.getClazz();
+    public void evaluate(RuleSet rs, Row row, ConfMtx cm) {
+        Integer expected = (Integer) row.getClazz();
         int predicted = rs.apply(row.getAtts());
         cm.add(expected, predicted);
 

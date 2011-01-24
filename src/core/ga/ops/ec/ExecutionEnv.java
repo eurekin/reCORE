@@ -3,7 +3,7 @@ package core.ga.ops.ec;
 import core.DataSetBundle;
 import core.ga.Evaluator;
 import core.ga.RuleChromosomeSignature;
-import core.ga.RuleDecoderSubractingOneFromClass;
+import core.ga.RuleDecoder;
 import core.io.dataframe.DataFrame;
 import java.util.Random;
 
@@ -17,7 +17,7 @@ public class ExecutionEnv {
     Evaluator evaluator;
     DataSetBundle bundle;
     FitnessEval fitnessEvaluator;
-    RuleDecoderSubractingOneFromClass decoder;
+    RuleDecoder decoder;
     private double tokenCompetitionWeight = 1.0;
     private boolean ruleSortingEnabled = false;
     private boolean tokenCompetitionEnabled = true;
@@ -46,7 +46,7 @@ public class ExecutionEnv {
     }
 
     public ExecutionEnv(int size, Random rand, Evaluator evaluator,
-            DataSetBundle bundle, RuleDecoderSubractingOneFromClass decoder,
+            DataSetBundle bundle, RuleDecoder decoder,
             FitnessEval ruleFitEval) {
         this.ruleCount = size;
         this.rand = rand;
@@ -76,7 +76,7 @@ public class ExecutionEnv {
         return bundle.getData();
     }
 
-    public RuleDecoderSubractingOneFromClass decoder() {
+    public RuleDecoder decoder() {
         return decoder;
     }
 

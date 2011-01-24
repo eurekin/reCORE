@@ -157,6 +157,10 @@ public class CoPopulations {
         population++;
     }
 
+    public ExecutionEnv getContext() {
+        return ec;
+    }
+
     public static class PopInfo {
 
         public int oneRuleIndividuals, howManyHaveBetterAccThanItsRule;

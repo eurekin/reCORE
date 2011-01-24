@@ -6,7 +6,7 @@ import core.ga.Individual;
 import core.ga.Mutable;
 import core.ga.Mutator;
 import core.ga.Rule;
-import core.ga.RuleDecoderSubractingOneFromClass;
+import core.ga.RuleDecoder;
 import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
 import core.io.dataframe.DataFrame;
@@ -97,7 +97,7 @@ public final class EvoIndividual implements Mutable {
     }
 
     public void decode() {
-        RuleDecoderSubractingOneFromClass decoder = ctx.decoder();
+        RuleDecoder decoder = ctx.decoder();
         for (Individual individual : rules) {
             individual.decode(decoder);
         }
@@ -132,7 +132,7 @@ public final class EvoIndividual implements Mutable {
             Evaluator evaluator) {
         cm = new ConfMtx(clazzMax);
         RuleSet rS = getRS();
-        for (Row<Integer, Integer> row : data) {
+        for (Row  row : data) {
             evaluator.evaluate(rS, row, cm);
         }
         cm.getCMes();

@@ -20,8 +20,8 @@ public class FluentBulders {
     }
     private static int rowsofar = 0;
 
-    public static Row<Integer, Integer> makeRow(final int clazz, final Integer... attrs) {
-        return new Row<Integer, Integer>() {
+    public static Row makeRow(final int clazz, final Integer... attrs) {
+        return new Row() {
 
             private final int id = (rowsofar++);
 
@@ -29,7 +29,7 @@ public class FluentBulders {
                 return clazz;
             }
 
-            public List<Integer> getAtts() {
+            public List  getAtts() {
                 return Arrays.asList(attrs);
             }
 

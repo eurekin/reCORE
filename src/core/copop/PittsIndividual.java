@@ -89,7 +89,7 @@ public class PittsIndividual implements Mutable {
     public void evaluate(DataFrame data,
             Evaluator evaluator) {
         cm = new ConfMtx(clazzMax);
-        for (Row<Integer, Integer> row : data) {
+        for (Row row : data) {
             evaluator.evaluate(getRS(), row, cm);
         }
         cm.getCMes();

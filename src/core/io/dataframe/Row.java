@@ -6,11 +6,11 @@ import java.util.List;
  *
  * @author Rekin
  */
-public interface Row<V, C> {
+public interface Row {
 
-    public C getClazz();
+    public Object getClazz();
 
-    public List<V> getAtts();
+    public List<Object> getAtts();
 
     public int getId();
 }

@@ -15,8 +15,9 @@ package core.io.repr.col;
  * 
  * @author Rekin
  */
-public interface Column<T> {
+public interface Column {
 
-    public T get(int i);
-    public void add(T el);
+    public Object get(int i);
+
+    public void add(Object el);
 }

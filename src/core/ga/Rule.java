@@ -27,6 +27,7 @@ public class Rule implements Serializable {
             Selector sel = sels.get(i);
             if (!sel.on)
                 continue;
+            // This here is one shitty API! FIXME or not
             boolean result = sel.op.apply(sel.val, args.get(i));
             if (!result)
                 return false;

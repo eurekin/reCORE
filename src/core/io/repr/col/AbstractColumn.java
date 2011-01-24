@@ -6,15 +6,15 @@ import java.util.ArrayList;
  *
  * @author Rekin
  */
-public abstract class AbstractColumn<T> implements Column<T> {
+public abstract class AbstractColumn implements Column {
 
-    protected ArrayList<T> list = new ArrayList<T>();
+    protected ArrayList list = new ArrayList();
 
-    public T get(int i) {
+    public Object get(int i) {
         return list.get(i);
     }
 
-    public void add(T el) {
+    public void add(Object el) {
         list.add(el);
     }
 }
