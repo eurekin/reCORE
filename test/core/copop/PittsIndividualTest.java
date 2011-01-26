@@ -6,8 +6,8 @@ import core.ga.Rule;
 import core.ga.RulePrinter;
 import core.ga.ops.ec.FitnessEval;
 import core.ga.ops.ec.FitnessEvaluatorFactory;
-import core.ga.ops.ec.ExecutionContext;
 import core.ga.RulePopulation;
+import core.ga.ops.ec.ExecutionEnv;
 import org.junit.Test;
 
 /**
@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class PittsIndividualTest {
 
-    private ExecutionContext ec;
+    private ExecutionEnv ec;
     RulePopulation rp;
     PittsIndividual pi;
 
