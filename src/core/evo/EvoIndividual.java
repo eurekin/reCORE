@@ -10,6 +10,7 @@ import core.ga.RuleDecoder;
 import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
 import core.io.dataframe.DataFrame;
+import core.io.repr.col.IntegerDomain;
 import core.stat.ConfMtx;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +101,7 @@ public final class EvoIndividual implements Mutable {
         RuleDecoder decoder = ctx.decoder();
         for (Individual individual : rules) {
             individual.decode(decoder);
+            individual.repair();
         }
     }
 
@@ -149,7 +151,7 @@ public final class EvoIndividual implements Mutable {
         }
         return new RuleSet(ru, defaultClazz);
     }
-
+    
     public void addOrRemoveWith(double prob) {
         if (rand.nextDouble() > prob)
             return;
