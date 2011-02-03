@@ -42,6 +42,15 @@ public class DataFrame extends AbstractList<Row> {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Object elem : this) {
+            sb.append(elem).append("\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
     public int size() {
         return size;
     }

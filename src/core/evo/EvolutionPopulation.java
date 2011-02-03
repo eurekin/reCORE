@@ -1,12 +1,10 @@
 package core.evo;
 
-import core.ga.Individual;
 import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -92,7 +90,6 @@ public final class EvolutionPopulation {
         mutate();
         decode();
         evaluate();
-        debugFitness();
     }
     EvoIndividual best;
 
@@ -118,34 +115,5 @@ public final class EvolutionPopulation {
             next.add(get);
         }
     }
-    int population = 0;
-    public List<PopInfo> popInfo = new ArrayList<PopInfo>();
 
-    private void debugFitness() {
-        PopInfo info = new PopInfo();
-        for (EvoIndividual evoIndividual : individuals) {
-            List<Individual> r = evoIndividual.rules;
-            if (r.size() == 1) {
-                Individual onlyRule = r.get(0);
-                info.oneRuleIndividuals++;
-
-                if (onlyRule.fitness() < evoIndividual.fitness())
-                    info.howManyHaveBetterAccThanItsRule++;
-
-            }
-
-        }
-        population++;
-    }
-
-    public static class PopInfo {
-
-        public int oneRuleIndividuals, howManyHaveBetterAccThanItsRule;
-
-        @Override
-        public String toString() {
-            return "("+howManyHaveBetterAccThanItsRule+"/"+oneRuleIndividuals+")";
-        }
-
-    }
 }

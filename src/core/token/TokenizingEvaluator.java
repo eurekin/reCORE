@@ -23,7 +23,9 @@ public class TokenizingEvaluator implements Evaluator {
 
     public void evaluate(Rule rule, Row row, BinaryConfMtx cm) {
         boolean predicted = rule.apply(row.getAtts());
-        boolean same = row.getClazz().equals(rule.getClazz());
+        Object clazz = row.getClazz();
+        Integer clazzInt = ((Integer) clazz);
+        boolean same = clazzInt.equals(rule.getClazz());
 
         if (same) {
             if (predicted) {

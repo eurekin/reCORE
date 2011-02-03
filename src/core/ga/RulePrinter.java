@@ -3,6 +3,7 @@ package core.ga;
 import core.copop.RuleSet;
 import core.io.dataframe.Mapper;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rekin
@@ -59,12 +60,24 @@ public class RulePrinter {
             if (!first) {
                 sb.append(" AND ");
             }
-            sb.append(map.nameOf(i)).append(sel.op).append(map.valueMap(i).get(sel.val));
+            sb.append(map.nameOf(i)).append(sel.op).append(getMeMappedValue(i, sel));
             first = false;
         }
         sb.append(" THEN ").append(map.getClazzName()).append("=");
         sb.append(map.getClassmap().get(r.getClazz()));
         return sb.toString();
+    }
+
+    private String getMeMappedValue(int i, Selector sel) {
+        Map<Integer, String> valueMap = map.valueMap(i);
+        Object val = sel.val;
+        if (valueMap != null)
+            return valueMap.get(sel.val);
+        else if (val instanceof Float[]) {
+            Float[] vals = (Float[]) val;
+            return "[" + vals[0] + ", " + vals[1] + "]";
+        } else
+            return "#<" + val + ">";
     }
 
     public String fullPrettyPrint(Rule r) {
@@ -79,7 +92,7 @@ public class RulePrinter {
             if (i != 0) {
                 sb.append("\tAND ");
             }
-            sb.append(map.nameOf(i)).append(sel.op).append(map.valueMap(i).get(sel.val));
+            sb.append(map.nameOf(i)).append(sel.op).append(getMeMappedValue(i, sel));
             if (!sel.on)
                 sb.append("*");
         }

@@ -6,11 +6,11 @@ import core.ga.ops.ec.FitnessEval;
 import core.io.dataframe.Row;
 import core.io.dataframe.DataFrame;
 import core.io.repr.col.Domain;
+import core.io.repr.col.FloatDomain;
 import core.io.repr.col.IntegerDomain;
 import core.stat.BinaryConfMtx;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 /**
  *
@@ -89,6 +89,8 @@ public class Individual implements Mutable {
         for (int selId = 0; selId < allSelectors.size(); selId++) {
             Selector sel = allSelectors.get(selId);
             Domain domain = signature.getAttrDomain().get(selId);
+            if (domain instanceof FloatDomain)
+                continue;
             while (!domain.contains(sel.val)) {
                 Integer startAddr = signature.getGeneAddresses()[selId] + 2;
                 Integer length = signature.getValueCodeSizes()[selId];

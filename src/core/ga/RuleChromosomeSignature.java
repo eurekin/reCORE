@@ -1,10 +1,8 @@
 package core.ga;
 
 import core.io.repr.col.Domain;
-import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
-import static java.lang.Math.*;
 import core.io.repr.col.DomainMemoizable;
 import core.io.repr.col.IntegerDomain;
 
@@ -74,6 +72,7 @@ public class RuleChromosomeSignature {
         }
         classDomain = (IntegerDomain) classCol.getDomain();
         calculateGeneAddresses();
+        debugValues();
     }
 
     public Integer getClazzAddress() {
@@ -129,5 +128,12 @@ public class RuleChromosomeSignature {
 
     private int getSizeOfGeneNo(int no) {
         return switchCodeSize + relCodeSize + valueCodeSizes[no];
+    }
+
+    private void debugValues() {
+//        System.out.println("Signature debug:");
+        for (Domain domain : attrDomain) {
+            System.out.println(domain.getClass().getName() + domain.toString());
+        }
     }
 }

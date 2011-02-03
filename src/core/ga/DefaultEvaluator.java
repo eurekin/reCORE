@@ -13,7 +13,9 @@ public class DefaultEvaluator implements Evaluator {
 
     public void evaluate(Rule rule, Row row, BinaryConfMtx cm) {
         boolean predicted = rule.apply(row.getAtts());
-        boolean same = row.getClazz().equals(rule.getClazz());
+        Object clazz = row.getClazz();
+        Integer clazzInt = ((Integer) clazz);
+        boolean same = clazzInt.equals(rule.getClazz());
 
         if (same) {
             if (predicted) {
@@ -29,10 +31,10 @@ public class DefaultEvaluator implements Evaluator {
             }
         }
     }
+
     public void evaluate(RuleSet rs, Row row, ConfMtx cm) {
         Integer expected = (Integer) row.getClazz();
         int predicted = rs.apply(row.getAtts());
         cm.add(expected, predicted);
-
     }
 }

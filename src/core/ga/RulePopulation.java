@@ -169,6 +169,8 @@ public class RulePopulation implements Iterable<Individual> {
             new HashMap<Integer, Integer>();
 
     public void select() {
+                debugOutput();
+
         if (context.getDebugOptions().isEvolutionPhaseOutput())
             System.out.println("[SEL-r]");
 

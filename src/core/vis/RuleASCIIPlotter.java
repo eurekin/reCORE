@@ -3,6 +3,7 @@ package core.vis;
 import core.copop.RuleSet;
 import core.ga.Rule;
 import core.ga.RuleChromosomeSignature;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,7 +74,7 @@ public class RuleASCIIPlotter {
         String[][] datavis = initEmptyDataVis(c);
         for (List<Integer> comb : c.allCombinations()) {
             int ok = rs.apply(comb);
-            String s = ok == 0 ? " " : "#";
+             String s = ok == 0 ? " " : "#";
             datavis[c.getY(comb)][c.getX(comb)] = s;
         }
         return datavis;
@@ -108,9 +109,13 @@ public class RuleASCIIPlotter {
     public String[][] plotClasses(RuleSet rs) {
         String[][] vis = initEmptyDataVis(c);
         for (List<Integer> comb : c.allCombinations()) {
-            int ok = rs.apply(comb);
+            List<Float> converted = new ArrayList<Float>();
+            for (Integer toconv : comb) {
+                converted.add(new Float(toconv.intValue()));
+            }
+            int ok = rs.apply(converted);
             String toString = new Integer(ok).toString();
-            toString = toString.equals("0") ? " " : toString;
+             toString = toString.equals("0") ? " " : toString;
             vis[c.getY(comb)][c.getX(comb)] = toString;
         }
         return vis;

@@ -1,6 +1,7 @@
 package core.copop;
 
 import core.ga.RulePopulation;
+import core.ga.RulePrinter;
 import core.ga.ops.ec.ExecutionEnv;
 import core.stat.SimpleStatistics;
 import core.vis.RuleASCIIPlotter;
@@ -37,7 +38,7 @@ public class CoPopulations {
         debugOutputIfEnabled();
         rsp.select();        // selekcja elitarnas
         rsp.evolve();  // reset (ruleSet=null;) oraz mutacja (uwzgl. elitarność)
-        
+
         rp.select(); // buduje też indeks do zaktualizowania reguł
         rsp.updateIndexes(); // naprawia wskaźniki do reguł
         rp.mutate(); // zachowuje elitarność
@@ -47,7 +48,7 @@ public class CoPopulations {
 
         rsp.evaluate();      // tworzenie wieloklasowej oraz ważonej mac. pom.
         updateBest();
-        
+
         // do raports and stuff
 
     }
@@ -110,15 +111,21 @@ public class CoPopulations {
                         System.out.println("Seed = " + ec.rand());
                         System.out.println(ind);
                         ruleSet = ind.getRS();
-                        System.out.println(ec.getBundle().getPrinter().print(ruleSet));
-                        System.out.println(ind.getCm().getWeighted());
+                        RulePrinter printer = ec.getBundle().getPrinter();
+                        if (printer != null) {
+                            System.out.println(printer.print(ruleSet));
+                            System.out.println(ind.getCm().getWeighted());
+                        }
 
                         RuleASCIIPlotter plotter = ec.getBundle().getPlotter();
-                        System.out.println(HORSPC);
-                        System.out.println(HEADER);
-                        System.out.println(HORSPC);
-                        plotter.detailedPlots(ruleSet);
-                        System.out.println(HORSPC);
+                        if (plotter != null) {
+
+                            System.out.println(HORSPC);
+                            System.out.println(HEADER);
+                            System.out.println(HORSPC);
+                            plotter.detailedPlots(ruleSet);
+                            System.out.println(HORSPC);
+                        }
 
                         break outer;
 
@@ -133,8 +140,6 @@ public class CoPopulations {
             "|  non-zero class vis    |    class number vis    |     rule number vis    |";
     private static String HORSPC =
             "+------------------------+------------------------+------------------------+";
-
-
     int population = 0;
     public List<PopInfo> popInfo = new ArrayList<PopInfo>();
 
@@ -149,7 +154,7 @@ public class CoPopulations {
                 info.oneRuleIndividuals++;
 
 //                if (onlyRule.fitness() < evoIndividual.fitness())
-                    info.howManyHaveBetterAccThanItsRule++;
+                info.howManyHaveBetterAccThanItsRule++;
 
             }
 
@@ -167,8 +172,7 @@ public class CoPopulations {
 
         @Override
         public String toString() {
-            return "("+howManyHaveBetterAccThanItsRule+"/"+oneRuleIndividuals+")";
+            return "(" + howManyHaveBetterAccThanItsRule + "/" + oneRuleIndividuals + ")";
         }
-
     }
 }

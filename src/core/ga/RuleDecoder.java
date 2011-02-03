@@ -57,15 +57,27 @@ public class RuleDecoder {
         Integer codeSize = sig.getValueCodeSizes()[selId];
         Domain domain = sig.getAttrDomain().get(selId);
 
-        Object val = decode(toDecode, i + 2, codeSize);
 
         // Special numeric operator handling
         if (domain instanceof FloatDomain) {
+            // bitsize uwzględnia dodatkowy bit na 2 bitowy opcode
             FloatDomain flomain = (FloatDomain) domain;
-            op = operatorBit ? OpFactory.loet() : OpFactory.goet();
-            val = flomain.adjust(val);
+            int operatorId = decode(addressable, i, 2);
+
+            op = OpFactory.forCodedInt(operatorId);
+            int realCodesize = codeSize - 1;
+            int halfSize = realCodesize / 2;
+            int rest = realCodesize - halfSize;
+            Object vala = decode(toDecode, i + 3, halfSize);
+            Object valb = decode(toDecode, i + 3 + halfSize, rest);
+            Float flta = (Float) flomain.adjust(vala);
+            Float fltb = (Float) flomain.adjust(valb);
+            return new Selector(on, op, new Float[]{flta, fltb});
+            // nominal operator
+        } else {
+            Object val = decode(toDecode, i + 2, codeSize);
+            return new Selector(on, op, val);
         }
-        return new Selector(on, op, val);
     }
 
     private int decode(Addressable toDecode, int start, int size) {

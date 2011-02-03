@@ -18,7 +18,7 @@ public final class FloatDomain implements Domain, DomainAdjuster {
         this.min = min;
         this.max = max;
         this.range = max - min;
-        this.last = 1 << bitSize();
+        this.last = 1 << (bitSize() - 1) / 2; // hack hackedy hack hack
     }
 
     public FloatDomain(double lowerNumericBound, double upperNumericBound) {
@@ -31,7 +31,7 @@ public final class FloatDomain implements Domain, DomainAdjuster {
     }
 
     public int bitSize() {
-        return 24; // TODO FIXME XXX hahaha, problem z głowy
+        return 40 + 1; // TODO FIXME XXX hahaha, problem z głowy
     }
 
     public Object adjust(Object o) {
@@ -59,5 +59,10 @@ public final class FloatDomain implements Domain, DomainAdjuster {
         if (f < 0 || f > last)
             throw new IllegalStateException(
                     "Float f =" + f + " not in range 0..." + last);
+    }
+
+    @Override
+    public String toString() {
+        return "<" + min + ", " + max + "> ";
     }
 }
