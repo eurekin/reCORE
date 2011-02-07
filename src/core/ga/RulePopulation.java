@@ -2,6 +2,8 @@ package core.ga;
 
 import core.ga.ops.ec.ExecutionEnv;
 import core.ga.ops.ec.FitnessEval;
+import core.ga.sel.FitnessableSelector;
+import core.ga.sel.SelectorFactory;
 import core.stat.SimpleStatistics;
 import core.token.TokenCompetition;
 import core.token.TokenizingEvaluator;
@@ -11,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  *
@@ -20,10 +21,13 @@ import java.util.TreeMap;
  */
 public class RulePopulation implements Iterable<Individual> {
 
-    List<Individual> individuals;
+    ArrayList<Individual> individuals;
     final ExecutionEnv context;
-    private List<Individual> next;
+    private ArrayList<Individual> next;
     private boolean tokenCompetition = true;
+    Map<Integer, Integer> oldIndexesToNew =
+            new HashMap<Integer, Integer>();
+    FitnessableSelector<Individual> selector;
 
     public RulePopulation(ExecutionEnv ctx) {
         this.individuals = new ArrayList<Individual>(ctx.size());
@@ -99,7 +103,7 @@ public class RulePopulation implements Iterable<Individual> {
 
     private void outputAllRules() {
         RulePrinter printer = context.getBundle().getPrinter();
-         for (Individual ind : individuals) {
+        for (Individual ind : individuals) {
             System.out.printf("Fitness=%5.1f%%\n", ind.fitness() * 100);
             System.out.printf("%s  \n", ind.cm());
             String s = printer.prettyPrint(ind.rule());
@@ -165,41 +169,27 @@ public class RulePopulation implements Iterable<Individual> {
     public List<Individual> getIndividuals() {
         return individuals;
     }
-    Map<Integer, Integer> oldIndexesToNew =
-            new HashMap<Integer, Integer>();
 
     public void select() {
-                debugOutput();
+        debugOutput();
 
         if (context.getDebugOptions().isEvolutionPhaseOutput())
             System.out.println("[SEL-r]");
-
         next = new ArrayList<Individual>(individuals.size());
-
         // index updates
         oldIndexesToNew.clear();
         saveTheRulesWhichAreNeededByRulePopulationsElitism();
-        // random one
-        TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
-        double CDF[] = new double[individuals.size()];
-        double acc = 0;
-        double sumfit = 0;
-
-        for (Individual el : individuals)
-            sumfit += el.fitness();
-        for (int i = 0; i < CDF.length; i++) {
-            acc += individuals.get(i).fitness();
-            CDF[i] = acc / sumfit;
-        }
-        for (int i = 0; i < CDF.length; i++)
-            m.put(CDF[i], i);
-        while (next.size() < individuals.size()) {
-            int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
-            addIndividualToTemporaryPopulationAndUpdateIndex(r);
-        }
+        updateSelector();
+        while (next.size() < individuals.size())
+            addIndividualToTemporaryPopulationAndUpdateIndex(selector.select());
         switchPopulations();
 
         debugOutput();
+    }
+
+    private void updateSelector() {
+        // random one
+        selector = SelectorFactory.give(context, individuals);
     }
 
     public SimpleStatistics stats() {

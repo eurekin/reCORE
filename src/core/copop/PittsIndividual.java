@@ -1,6 +1,7 @@
 package core.copop;
 
 import core.ga.Evaluator;
+import core.ga.Fitnessable;
 import core.ga.Individual;
 import core.ga.Mutable;
 import core.ga.Mutator;
@@ -28,7 +29,7 @@ import java.util.Random;
  *
  * @author Rekin
  */
-public class PittsIndividual implements Mutable {
+public class PittsIndividual implements Mutable, Fitnessable {
 
     Random rand;
     private int ruleNo;

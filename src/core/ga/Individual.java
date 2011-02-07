@@ -16,7 +16,7 @@ import java.util.Random;
  *
  * @author Rekin
  */
-public class Individual implements Mutable {
+public class Individual implements Mutable, Fitnessable {
 
     private Rule rule;
     private Random rand;

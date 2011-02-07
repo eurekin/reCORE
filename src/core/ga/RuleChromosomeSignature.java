@@ -72,7 +72,7 @@ public class RuleChromosomeSignature {
         }
         classDomain = (IntegerDomain) classCol.getDomain();
         calculateGeneAddresses();
-        debugValues();
+//        debugValues();
     }
 
     public Integer getClazzAddress() {
@@ -131,7 +131,7 @@ public class RuleChromosomeSignature {
     }
 
     private void debugValues() {
-//        System.out.println("Signature debug:");
+        System.out.println("Signature debug:");
         for (Domain domain : attrDomain) {
             System.out.println(domain.getClass().getName() + domain.toString());
         }

@@ -27,7 +27,16 @@ public class ExecutionEnv {
     int ruleCount = 200;
     int ruleSetCount = 20;
     private double rsmp = 0.01;
+    int selectionType = 3;
     DebugOptions debugOptions = new DebugOptions();
+
+    public int getSelectionType() {
+        return selectionType;
+    }
+
+    public void setSelectionType(int selectionType) {
+        this.selectionType = selectionType;
+    }
 
     public int getRuleCount() {
         return ruleCount;

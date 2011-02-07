@@ -2,6 +2,7 @@ package core.evo;
 
 import core.copop.RuleSet;
 import core.ga.Evaluator;
+import core.ga.Fitnessable;
 import core.ga.Individual;
 import core.ga.Mutable;
 import core.ga.Mutator;
@@ -10,7 +11,6 @@ import core.ga.RuleDecoder;
 import core.ga.ops.ec.ExecutionEnv;
 import core.io.dataframe.Row;
 import core.io.dataframe.DataFrame;
-import core.io.repr.col.IntegerDomain;
 import core.stat.ConfMtx;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ import java.util.Random;
  *
  * @author gmatoga
  */
-public final class EvoIndividual implements Mutable {
+public final class EvoIndividual implements Mutable, Fitnessable {
 
     private ConfMtx cm;
     private EvolutionPopulation population;

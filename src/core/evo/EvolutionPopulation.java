@@ -1,11 +1,12 @@
 package core.evo;
 
 import core.ga.ops.ec.ExecutionEnv;
+import core.ga.sel.FitnessableSelector;
+import core.ga.sel.SelectorFactory;
 import core.stat.SimpleStatistics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.TreeMap;
 
 /**
  *
@@ -15,6 +16,7 @@ public final class EvolutionPopulation {
 
     ArrayList<EvoIndividual> individuals;
     private ExecutionEnv context;
+    FitnessableSelector<EvoIndividual> selector;
 
     public EvolutionPopulation(ExecutionEnv context) {
         this.individuals = new ArrayList<EvoIndividual>();
@@ -36,29 +38,16 @@ public final class EvolutionPopulation {
         }
     }
 
+    private void updateSelector() {
+        selector = SelectorFactory.give(context, individuals);
+    }
+
     public void select() {
-        ArrayList<EvoIndividual> next =
-                new ArrayList<EvoIndividual>(individuals.size());
-
+        ArrayList<EvoIndividual> next = new ArrayList<EvoIndividual>();
         addEliteOnesFirst(next);
-
-        TreeMap<Double, Integer> m = new TreeMap<Double, Integer>();
-        double CDF[] = new double[individuals.size()];
-        double acc = 0;
-        double sumfit = 0;
-
-        for (EvoIndividual el : individuals)
-            sumfit += el.fitness();
-        for (int i = 0; i < CDF.length; i++) {
-            acc += individuals.get(i).fitness();
-            CDF[i] = acc / sumfit;
-        }
-        for (int i = 0; i < CDF.length; i++)
-            m.put(CDF[i], i);
-        while (next.size() < individuals.size()) {
-            int r = m.ceilingEntry(context.rand().nextDouble()).getValue();
-            next.add(individuals.get(r).copy());
-        }
+        updateSelector();
+        while (next.size() < individuals.size())
+            next.add(individuals.get(selector.select()).copy());
         individuals = next;
     }
 
@@ -115,5 +104,4 @@ public final class EvolutionPopulation {
             next.add(get);
         }
     }
-
 }
