@@ -68,21 +68,30 @@ public class CoPopulations {
     public RuleSetPopulation ruleSets() {
         return rsp;
     }
-    PittsIndividual best;
+    volatile PittsIndividual best;
 
     public PittsIndividual getBest() {
         return best;
     }
 
     private void updateBest() {
-        if (best == null) {
-            best = rsp.getBest().copy();
-        } else {
-            if (best.fitness()
-                < rsp.getBest().fitness())
+        try {
+            if (best == null) {
                 best = rsp.getBest().copy();
-        }
+            } else {
+                if (best != null
+                    && best.fitness()
+                       < rsp.getBest().fitness())
+                    best = rsp.getBest().copy();
+            }
 
+        } catch (NullPointerException ex) {
+            String s = "...";
+            if (rsp != null) {
+                s = rsp.getBest().toString();
+            }
+            throw new RuntimeException("best = " + best + ", rsp = " + rsp + " rsp.getBest = " + s, ex);
+        }
     }
     double max;
 

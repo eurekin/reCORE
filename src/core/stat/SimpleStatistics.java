@@ -72,7 +72,7 @@ public class SimpleStatistics {
 
     @Override
     public String toString() {
-        return String.format("min=%5.1f%%,  mean=%5.1f%%,  max=%5.1f%%,  dev=%5.1f%%",
-                min * 100, getMean() * 100, max * 100, getStdDev() * 100);
+        return String.format("min=%5.1f%%,  mean=%5.1f%%,  max=%5.1f%%,  dev=%5.1f%%, n=%d",
+                min * 100, getMean() * 100, max * 100, getStdDev() * 100, count);
     }
 }

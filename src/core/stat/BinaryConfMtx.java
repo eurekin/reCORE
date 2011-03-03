@@ -19,14 +19,14 @@ public class BinaryConfMtx {
         final double den = tp + fp;
         if (den == 0.)
             return 0;
-        return (double) (tp) / (double) (den);
+        return (double) (tp) / den;
     }
 
     public double recall() {
         final double den = tp + fn;
         if (den == 0.)
             return 0;
-        return (double) (tp) / (double) (tp + fn);
+        return (double) (tp) /  den;
     }
 
     public double fMeasure() {

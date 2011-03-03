@@ -152,21 +152,19 @@ public class RuleSetPopulation {
         if (context.getDebugOptions().isEvolutionPhaseOutput())
             System.out.println("[RS-STATS] Gathering statistics");
         SimpleStatistics ss = new SimpleStatistics();
-        FitnessEval fevl = context.fitnessEvaluator();
         for (PittsIndividual i : getIndividuals()) {
-            ss.addValue(fevl.eval(i.getCm().getWeighted()));
+            ss.addValue(i.fitness());
         }
         return ss;
     }
 
     public PittsIndividual getBest() {
-        double max = stats().getMax();
-        FitnessEval fevl = context.fitnessEvaluator();
+        PittsIndividual bestest = getIndividuals().get(0);
         for (PittsIndividual i : getIndividuals()) {
-            if (fevl.eval(i.getCm().getWeighted()) == max)
-                return i;
+            if (bestest.fitness() < i.fitness())
+                bestest = i;
         }
-        return null;
+        return bestest;
     }
 
     public List<PittsIndividual> getIndividuals() {
