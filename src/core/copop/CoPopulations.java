@@ -36,7 +36,7 @@ public class CoPopulations {
 
     public void evolve() {
         debugOutputIfEnabled();
-        rsp.select();        // selekcja elitarnas
+        rsp.select();        // selekcja elitarna
         rsp.evolve();  // reset (ruleSet=null;) oraz mutacja (uwzgl. elitarność)
 
         rp.select(); // buduje też indeks do zaktualizowania reguł
